@@ -1,28 +1,122 @@
 /* basics */
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   width: 100%;
   height: 100%;
+  font-family: sans-serif;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+}
+
+/* lib */
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-fixed {
+  flex: none;
+}
+
+.flex-grow {
+  flex: 1 1 auto;
+}
+
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-vertical {
+  flex-direction: column;
 }
 
 /* app */
 
 .app-container {
   height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .app-bar {
   height: 30px;
-  background: rgb(229, 192, 255);
-  flex: 0 0 auto;
+  /*border-bottom: 2px solid rgb(207, 207, 207);*/
+  background: #58488a;
+  color: white;
+}
+
+/* drop shadow */
+.app-bar:after {
+  content: "";
+  box-shadow: 0 0 4px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.28);
+  height: 30px;
+  left: -2%;
+  position: fixed;
+  width: 104%;
+  will-change: top,left;
 }
 
 .app-content {
-  background: rgb(0, 255, 245);
-  flex: 1 1 auto;
+  background: rgb(240, 240, 240);
   overflow: auto;
+}
+
+.app-bar-logo {
+  width: 76px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.app-url-bar {
+  font-size: 14px;
+  outline: none;
+  border: 0px;
+  padding: 6px;
+  padding-top: 4px;
+}
+
+.app-section-about {
+  height: auto;
+  min-height: 16em;
+}
+
+/* doodads */
+
+.btn-hamburger {
+  width: 48px;
+}
+
+.btn-hamburger:after {
+  display: block;
+  content: '☰';
+  font-size: 19px;
+  color: inherit;
+}
+
+.btn-empty {
+  border: none;
+  background: transparent;
+  color: inherit;
 }
 
 /* debug */

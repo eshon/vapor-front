@@ -9,8 +9,9 @@ function Component() {
 }
 
 Component.render = function render(state) {
-  return h('.app-bar', [
-    anchor({ href: '/' }, 'home'),
-    anchor({ href: '/animals' }, 'animals!'),
+  return h('.app-bar.flex-fixed.flex-row', [
+    h('span.app-bar-logo.flex-fixed', 'Vapor'),
+    h('input.app-url-bar.flex-grow', { type: 'text', placeholder: 'http://yourdapp.com/' }),
+    h('button.btn-hamburger.btn-empty.flex-fixed', ' ')
   ])
 }

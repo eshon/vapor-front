@@ -14,9 +14,9 @@ function Component() {
 }
 
 Component.render = function render(state) {
-  return h('.app-container', [
+  return h('.app-container.flex-column', [
     AppBarComponent.render(state),
-    h('.app-content', [
+    h('.app-content.flex-grow', [
       RouterComponent.render(state, {
         '/': function() {
           return LandingComponent.render(state.landing)
