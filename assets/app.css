@@ -1,0 +1,35 @@
+/* basics */
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+/* app */
+
+.app-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-bar {
+  height: 30px;
+  background: rgb(229, 192, 255);
+}
+
+.app-content {
+  background: rgb(0, 255, 245);
+  flex-grow: 1;
+  overflow: auto;
+}
+
+/* debug */
+
+.debug-box {
+  /*display: block;*/
+  /*width: 40px;*/
+  height: 40px;
+  margin: 5px;
+  background: orange;
+}
