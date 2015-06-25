@@ -1,4 +1,4 @@
-var anchor = require('mercury-router').anchor
+var anchor = require('../router/index.js').anchor
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 

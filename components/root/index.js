@@ -1,4 +1,4 @@
-var RouterComponent = require('mercury-router')
+var RouterComponent = require('../router/index.js')
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 const LandingComponent = require('../landing/index.js')
