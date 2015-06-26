@@ -14,9 +14,9 @@ module.exports = Component
 
 
 function Component() {
-  return hg.state({
+  var state = hg.state({
     // state
-    dappUrl: hg.value(''),
+    dappUrl: hg.value(getDappUrl()),
     // components
     route: RouterComponent(),
     landing: LandingComponent(),
@@ -34,6 +34,8 @@ function Component() {
       },
     },
   })
+
+  return state
 }
 
 Component.render = function render(state) {
@@ -82,7 +84,9 @@ function dappSandbox(state, params) {
 
 function getDappUrl() {
   var stem = location.origin + dappRoutePrefix
-  return location.href.slice(stem.length)
+  if (stem === location.href.slice(0, stem.length)) {
+    return location.href.slice(stem.length)
+  }
 }
 
 function redirectTo(target){
