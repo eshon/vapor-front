@@ -1,17 +1,38 @@
-var anchor = require('../router/index.js').anchor
+const anchor = require('../router/index.js').anchor
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
+const UrlBarComponent = require('../url-bar/index.js')
+const mustOverride = require('../../util/mustOverride.js')
+const stateExtend = require('../../util/stateExtend.js')
 
 module.exports = Component
 
+
 function Component() {
-  return hg.state({})
+  return hg.state({
+    // state
+    dappUrl: hg.value(''),
+    // components
+    urlBar: UrlBarComponent(),
+    // channels
+    channels: {
+      navigateToDapp: mustOverride,
+    },
+  })
 }
 
 Component.render = function render(state) {
+  
+  var urlBarState = stateExtend(state.urlBar, {
+    value: state.dappUrl,
+    channels: {
+      submit: state.channels.navigateToDapp,
+    },
+  })
+  
   return h('.app-bar.flex-fixed.flex-row', [
     h('span.app-bar-logo.flex-fixed.select-none.cursor-pointer.z-bump', 'Vapor'),
-    h('input.app-url-bar.flex-grow.z-bump', { type: 'text', placeholder: 'http://yourdapp.com/' }),
+    UrlBarComponent.render(urlBarState),
     h('button.btn-hamburger.btn-empty.flex-fixed.z-bump')
   ])
 }

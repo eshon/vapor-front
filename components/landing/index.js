@@ -3,6 +3,7 @@ const h = require('../../mercury.js').h
 
 module.exports = Component
 
+
 function Component() {
   return hg.state({})
 }

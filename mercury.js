@@ -18,28 +18,12 @@ var mercury = module.exports = {
 
     // Input
     Delegator: require('dom-delegator'),
-    // deprecated: use hg.channels instead.
-    input: input,
-    // deprecated: use hg.channels instead.
-    handles: channels,
     channels: channels,
-    // deprecated: use hg.send instead.
-    event: require('value-event/event'),
     send: require('value-event/event'),
-    // deprecated: use hg.sendValue instead.
-    valueEvent: require('value-event/value'),
     sendValue: require('value-event/value'),
-    // deprecated: use hg.sendSubmit instead.
-    submitEvent: require('value-event/submit'),
     sendSubmit: require('value-event/submit'),
-    // deprecated: use hg.sendChange instead.
-    changeEvent: require('value-event/change'),
     sendChange: require('value-event/change'),
-    // deprecated: use hg.sendKey instead.
-    keyEvent: require('value-event/key'),
     sendKey: require('value-event/key'),
-    // deprecated use hg.sendClick instead.
-    clickEvent: require('value-event/click'),
     sendClick: require('value-event/click'),
 
     // State
