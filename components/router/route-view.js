@@ -13,12 +13,16 @@ function routeView(state, routes) {
   }
 
   var match = routeMap(routes)
-
   var res = match(state.route)
-  if (!res) {
-    throw new Error('router: no match found')
+
+  if (res) {
+    res.params.url = res.url
+    return res.fn(res.params)
+  } else {
+    var fn = routes['__default__']
+    if (!fn) throw new Error('router: no match found')
+    return fn({ url: state.route })
   }
 
-  res.params.url = res.url
-  return res.fn(res.params)
+  
 }

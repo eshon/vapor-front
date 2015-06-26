@@ -7,11 +7,19 @@ var app = App()
 
 hg.app(document.body, app, App.render)
 
+//
 // debug
-window.app = app
+//
 
+window.app = app
 window.debug = debug
+window.nav = nav
 
 function debug() {
   console.log(treeify(app(), true))
+}
+
+var routeAtom = require('./components/router/index.js').atom
+function nav(target){
+  routeAtom.set(target)
 }
