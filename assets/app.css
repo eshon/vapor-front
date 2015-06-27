@@ -88,11 +88,13 @@ button {
   position: fixed;
   width: 104%;
   will-change: top,left;
+  z-index: 1;
 }
 
 .app-content {
   background: rgb(240, 240, 240);
   overflow: auto;
+  position: relative;
 }
 
 .app-bar-logo {
@@ -112,6 +114,14 @@ button {
 .app-section-about {
   height: auto;
   min-height: 16em;
+}
+
+.dapp-sandbox {
+  position: absolute;
+  width: 100%;
+  /* 4px seems to come from iframe, but not sure how */
+  /* this eliminates the scrollbar */
+  height: calc(100% - 4px);
 }
 
 /* doodads */

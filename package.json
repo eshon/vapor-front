@@ -5,18 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "beefy index.js:bundle.js --live --open"
+    "start": "watchify index.js -o bundle.js -v & node server.js & wait"
   },
   "dependencies": {
+    "browserify": "^10.2.4",
     "dom-delegator": "^13.0.1",
     "geval": "^2.1.1",
     "global": "^4.3.0",
     "http-hash-router": "~1.1.0",
+    "iframe-sandbox": "^4.0.1",
     "main-loop": "^3.1.0",
     "observ": "^0.2.0",
     "observ-array": "^3.1.0",
     "observ-struct": "^5.0.1",
     "observ-varhash": "^1.0.2",
+    "pushserve": "^0.1.6",
     "route-map": "^0.1.0",
     "treeify": "^1.0.1",
     "value-event": "^5.0.0",
@@ -26,5 +29,8 @@
     "xtend": "^4.0.0"
   },
   "author": "kumavis",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "watchify": "^3.2.3"
+  }
 }
