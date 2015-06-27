@@ -26,7 +26,7 @@ function Component() {
 }
 
 Component.render = function render(state) {
-  return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement) })
+  return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) })
 }
 
 //
@@ -60,6 +60,10 @@ function didInsertElement(state, container) {
     })
 
   })
+}
+
+function willRemoveElement(state, container) {
+  container.removeChild(container.childNodes[0])
 }
 
 //

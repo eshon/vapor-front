@@ -2,10 +2,10 @@
 module.exports = LifecycleHook
 
 
-function LifecycleHook(state, didInsertElement, didRemoveElement) {
+function LifecycleHook(state, didInsertElement, willRemoveElement) {
   this.state = state
   this._hook = didInsertElement
-  this._unhook = didRemoveElement
+  this._unhook = willRemoveElement
 }
 
 LifecycleHook.prototype.hook = function(node, prop, prev){
