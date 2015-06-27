@@ -42,17 +42,22 @@ function didInsertElement(state, container) {
     origin: target,
   }
 
-  // start sandbox
-  console.log('starting sandbox for "'+target+'"...')
-  IframeSandbox(frameConfig, function(err, sandbox) {
-    console.log('loading "'+target+'"...')
+  // bug - doesnt work without this 
+  process.nextTick(function(){
 
-    // write to DOM
-    requestDappByUrl( target )
-      .pipe( sandbox.createWriteStream() )
+    // start sandbox
+    console.log('starting sandbox for "'+target+'"...')
+    IframeSandbox(frameConfig, function(err, sandbox) {
+      console.log('loading "'+target+'"...')
 
-    // handle messages
-    sandbox.on('message', handleSandboxMessage)
+      // write to DOM
+      requestDappByUrl( target )
+        .pipe( sandbox.createWriteStream() )
+
+      // handle messages
+      sandbox.on('message', handleSandboxMessage)
+
+    })
 
   })
 }
