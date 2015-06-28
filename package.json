@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "watchify index.js -o bundle.js -v & node server.js & wait"
+    "test": "echo 'No tests yet...' && exit 0",
+    "dev": "watchify index.js -o bundle.js -v & node server.js & wait",
+    "start": "browserify index.js -o bundle.js && node server.js"
   },
   "dependencies": {
     "browserify": "^10.2.4",
