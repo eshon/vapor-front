@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "echo 'No tests yet...' && exit 0",
     "dev": "watchify index.js -o bundle.js -v & node server.js & wait",
