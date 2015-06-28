@@ -8,8 +8,7 @@ const mustOverride = require('../../util/mustOverride.js')
 const stateExtend = require('../../util/stateExtend.js')
 const LifecycleHook = require('../../util/lifecycleHook.js')
 // TODO: should be an env var
-// const dappTransformUrl = (location.hostname === 'localhost') ? 'http://localhost:6001/' : 'https://transform.vapor.to/'
-const dappTransformUrl = 'https://transform.vapor.to/'
+const dappTransformUrl = 'https://transform.'+location.host+'/'
 
 module.exports = Component
 
