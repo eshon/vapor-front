@@ -8,7 +8,7 @@ const mustOverride = require('../../util/mustOverride.js')
 const stateExtend = require('../../util/stateExtend.js')
 const LifecycleHook = require('../../util/lifecycleHook.js')
 // TODO: should be an env var
-const dappTransformUrl = 'https://transform.'+location.host+'/'
+const dappTransformUrl = '//transform.'+location.host+'/'
 
 module.exports = Component
 
