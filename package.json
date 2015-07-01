@@ -10,6 +10,7 @@
     "start": "browserify index.js -o bundle.js && node server.js"
   },
   "dependencies": {
+    "ethereumjs-lib": "0.3.1",
     "browserify": "^10.2.4",
     "dom-delegator": "^13.0.1",
     "geval": "^2.1.1",
@@ -22,6 +23,7 @@
     "observ-struct": "^5.0.1",
     "observ-varhash": "^1.0.2",
     "pushserve": "^0.1.6",
+    "request": "^2.58.0",
     "route-map": "^0.1.0",
     "treeify": "^1.0.1",
     "value-event": "^5.0.0",
