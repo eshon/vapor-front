@@ -114,7 +114,7 @@ var Transaction = require('ethereumjs-lib').Transaction
 
 // web3.setProvider(new web3.providers.HttpProvider(vaporRpcUrl))
 
-var walletAddress = Buffer('a06ef3ed1ce41ade87f764de6ce8095c569d6d57')
+var walletAddress = Buffer('a06ef3ed1ce41ade87f764de6ce8095c569d6d57', 'hex')
 var walletKey = Buffer('8234b7fb702abf568633b91b22c03bf9344a6b5371651623d6c412c5f8d9ba73', 'hex')
 
 function handleRpc(message){
@@ -135,7 +135,7 @@ function handleRpc(message){
 
         console.log('sending signed tx:', txParams)
         var tx = new Transaction(txParams)
-        tx.sign(walletKey)
+        tx.sign(walletKey.toString('hex'))
         sendSignedTransaction(tx)
         return
 
