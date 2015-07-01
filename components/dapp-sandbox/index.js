@@ -135,7 +135,7 @@ function handleRpc(message){
 
         console.log('sending signed tx:', txParams)
         var tx = new Transaction(txParams)
-        tx.sign(walletKey.toString('hex'))
+        tx.sign(walletKey)
         sendSignedTransaction(tx)
         return
 
@@ -159,7 +159,7 @@ function sendSignedTransaction(signedTx) {
 
 function getNonce(address, cb) {
 
-  var data = address.toString('hex')
+  var data = [address.toString('hex')]
   sendRpc('eth_getTransactionCount', data, function(err, res, body){
     if (err) throw err
     if (body.error) throw body.error
@@ -180,7 +180,7 @@ function sendRpc(method, data, cb) {
     id: getRandomId(),
     jsonrpc: '2.0',
     method: method,
-    params: [data],
+    params: data,
   }
 
   request.post(rpcUrl, { withCredentials: false, json: rpcPayload }, cb)
