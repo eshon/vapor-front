@@ -2,6 +2,7 @@
 
 var RouterComponent = require('./router')
 RouterComponent.render = require('./route-view')
-RouterComponent.anchor = require('./route-anchor')
+RouterComponent.anchor = require('./route-anchor').anchor
+RouterComponent.anchorProps = require('./route-anchor').anchorProps
 
 module.exports = RouterComponent

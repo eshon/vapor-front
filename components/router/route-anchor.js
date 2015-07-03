@@ -3,9 +3,17 @@ var clickEvent = require('./click-event.js');
 
 var routeAtom = require('./router.js').atom;
 
-module.exports = anchor;
+module.exports = {
+    anchor: anchor,
+    anchorProps: anchorProps,
+};
 
 function anchor(props, text) {
+    props = anchorProps(props)
+    return h('a', props, text);
+}
+
+function anchorProps(props) {
     var href = props.href;
     props.href = '#';
 
@@ -15,9 +23,9 @@ function anchor(props, text) {
         rightClick: false
     });
 
-    return h('a', props, text);
-
     function pushState() {
         routeAtom.set(href);
     }
+
+    return props
 }

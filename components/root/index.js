@@ -19,7 +19,6 @@ function Component() {
     dappUrl: hg.value(getDappUrl()),
     // components
     route: RouterComponent(),
-    landing: LandingComponent(),
     appBar: AppBarComponent(),
     dappSandbox: DappSandboxComponent(),
     // channels
@@ -65,7 +64,7 @@ Component.render = function render(state) {
 }
 
 function landingPage(state) {
-  return LandingComponent.render(state.landing)
+  return LandingComponent.render(state)
 }
 
 function dappSandbox(state, params) {

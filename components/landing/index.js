@@ -1,5 +1,6 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
+const appNav = require('../app-nav')
 
 module.exports = Component
 
@@ -9,6 +10,13 @@ function Component() {
 }
 
 Component.render = function render(state) {
+  return [
+    appNav.render(state),
+    aboutSection(),
+  ]
+}
+
+function aboutSection(){
   return h('.app-section-about.flex-row.flex-center', [
     h('.flex-column', [
       h('h1', 'VAPOR'),
