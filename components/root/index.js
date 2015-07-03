@@ -1,13 +1,15 @@
 const extend = require('xtend')
 const location = require('global/window').location
-const RouterComponent = require('../router/index.js')
+const RouterComponent = require('../router/')
 const routeAtom = RouterComponent.atom
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
-const LandingComponent = require('../landing/index.js')
-const AppBarComponent = require('../app-bar/index.js')
-const DappSandboxComponent = require('../dapp-sandbox/index.js')
+const LandingComponent = require('../landing/')
+const AppBarComponent = require('../app-bar/')
+const DappSandboxComponent = require('../dapp-sandbox/')
+const IdMgmtComponent = require('../id-mgmt/')
 const stateExtend = require('../../util/stateExtend.js')
+
 const dappRoutePrefix = '/dapp/'
 
 module.exports = Component
@@ -41,10 +43,11 @@ Component.render = function render(state) {
 
   // define routes
   var routes = {}
-  routes['/'] = landingPage.bind(null, state)
+  routes['__default__'] = redirectTo.bind(null, '/')
+  routes['/'] = LandingComponent.render.bind(null, state)
   routes[dappRoutePrefix] = dappSandbox.bind(null, state)
   routes[dappRoutePrefix+':target*'] = dappSandbox.bind(null, state)
-  routes['__default__'] = redirectTo.bind(null, '/')
+  routes['/identities'] = IdMgmtComponent.render.bind(null, state)
 
   // setup state
   var appBarState = stateExtend(state.appBar, {
@@ -61,10 +64,6 @@ Component.render = function render(state) {
       RouterComponent.render(state, routes)
     ])
   ])
-}
-
-function landingPage(state) {
-  return LandingComponent.render(state)
 }
 
 function dappSandbox(state, params) {

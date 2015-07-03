@@ -45,6 +45,10 @@ a {
   flex-direction: row;
 }
 
+.flex-space-between {
+  justify-content: space-between;
+}
+
 .flex-row-right {
   display: flex;
   flex-direction: row;
@@ -127,11 +131,6 @@ a {
   padding-top: 4px;
 }
 
-.app-section-about {
-  height: auto;
-  min-height: 16em;
-}
-
 .dapp-sandbox {
   position: absolute;
   width: 100%;
@@ -139,6 +138,63 @@ a {
   /* this eliminates the scrollbar */
   height: calc(100% - 4px);
 }
+
+.app-section-about {
+  height: auto;
+  min-height: 16em;
+}
+
+.app-section-identity h1, .app-section-identity h2 {
+  text-transform: uppercase;
+}
+
+.app-section-identity header {
+  padding-bottom: 42px
+}
+
+.app-section-identity section {
+  padding-bottom: 62px
+}
+
+.identities-summary {
+  border-radius: 0 0 8px 8px;
+  background: rgb(88, 72, 138);
+  color: white;
+  padding: 16px;
+  margin: 10px;
+}
+
+.identities-summary h4 {
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-top: 8px;
+}
+
+.identities-summary table {
+  min-width: 300px;
+  margin-left: 14px;
+}
+
+.identity-container {
+  border-radius: 0 8px 8px 8px;
+  background: rgb(88, 72, 138);
+  color: white;
+  padding: 16px;
+  margin: 10px;
+}
+
+.identity-container h4 {
+  text-transform: uppercase;
+  font-size: 20px;
+  padding-top: 8px;
+}
+
+.identity-container table {
+  min-width: 300px;
+  margin-left: 14px;
+}
+
+
 
 /* doodads */
 
