@@ -93,22 +93,32 @@ a {
   height: 100%;
 }
 
+.app-header {
+  position: relative;
+}
+
+/* drop shadow */
+.app-header:before {
+  content: "";
+  box-shadow: 0 0 4px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.28);
+  height: 100%;
+  left: -2%;
+  position: absolute;
+  top: 0;
+  width: 104%;
+  will-change: top,left;
+  z-index: 1;
+}
+
+/* prevent dropshadow from intercepting interaction */
+.app-header * {
+  z-index: 1;
+}
+
 .app-bar {
   height: 30px;
   background: #58488a;
   color: white;
-}
-
-/* drop shadow */
-.app-bar:before {
-  content: "";
-  box-shadow: 0 0 4px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.28);
-  height: 30px;
-  left: -2%;
-  position: fixed;
-  width: 104%;
-  will-change: top,left;
-  z-index: 1;
 }
 
 .app-content {
@@ -194,7 +204,11 @@ a {
   margin-left: 14px;
 }
 
-
+.notification {
+  background-color: rgb(0, 255, 139);
+  width: 100%;
+  padding: 4px;
+}
 
 /* doodads */
 

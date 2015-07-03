@@ -31,9 +31,19 @@ Component.render = function render(state) {
     },
   })
   
-  return h('.app-bar.flex-fixed.flex-row', [
-    h('span.app-bar-logo.flex-fixed.select-none.cursor-pointer.z-bump', 'Vapor'),
-    UrlBarComponent.render(urlBarState),
-    h('button.btn-hamburger.btn-empty.flex-fixed.z-bump', { 'ev-click': hg.sendClick(state.channels.hamburgerHelper) })
+  return h('.app-header', [
+    h('.app-bar.flex-row', [
+      h('span.app-bar-logo.flex-fixed.select-none.cursor-pointer.z-bump', 'Vapor'),
+      UrlBarComponent.render(urlBarState),
+      h('button.btn-hamburger.btn-empty.flex-fixed.z-bump', { 'ev-click': hg.sendClick(state.channels.hamburgerHelper) }),
+    ]),
+    notification(),
   ])
+}
+
+function notification(){
+  return h('.notification.flex-row.flex-space-between', [
+    '3 pending transactions...',
+    h('button', 'confirm'),
+  ])  
 }
