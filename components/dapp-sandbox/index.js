@@ -1,6 +1,5 @@
 const IframeSandbox = require('iframe-sandbox')
 const XhrStream = require('xhr-stream')
-const request = require('request')
 const anchor = require('../router/index.js').anchor
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
@@ -11,28 +10,34 @@ const LifecycleHook = require('../../util/lifecycleHook.js')
 // TODO: should be an env var
 // const dappTransformUrl = '//transform.'+location.host+'/'
 const dappTransformUrl = 'https://transform.vapor.to/'
-// const rpcUrl = '//rpc.'+location.host+'/'
-const rpcUrl = 'https://rpc.vapor.to/'
-// const rpcUrl = 'http://localhost:8000/'
 
 module.exports = Component
 
+// BAD: this is antipattern, but not sure how else to do this
+// this is used to connect messages from the iframe sandbox to the component instance
+var currentSandbox = null
+var currentFlatSandbox = null
+var currentSandboxIframe = null
+var currentSandboxIframeUrl = null
+var currentSandboxIframeInTransit = false
 
 function Component() {
-  return hg.state({
+  var state = hg.state({
     // state
     dappUrl: hg.value(''),
-    // channels
-    channels: {
+    // actions
+    actions: {
       dappUrlRedirect: mustOverride,
+      newPendingTx: mustOverride,
     },
   })
+  currentSandbox = state
+  return state
 }
 
 Component.render = function render(state) {
-  return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) }, [
-      
-    ])
+  currentFlatSandbox = state
+  return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) })
 }
 
 //
@@ -42,6 +47,19 @@ Component.render = function render(state) {
 function didInsertElement(state, container) {
 
   var target = state.dappUrl
+
+  if (currentSandboxIframeInTransit) {
+    // iframe may be destroyed and recreated immediately
+    // due to an aggressive virtual-dom
+    // so we reuse the iframe
+    currentSandboxIframeInTransit = false
+    currentSandboxIframe.style.display = 'block'
+    // skip initialization
+    return
+  } else {
+    currentSandboxIframe = null
+    currentSandboxIframeUrl = null
+  }
 
   var frameConfig = {
     container: container,
@@ -54,9 +72,10 @@ function didInsertElement(state, container) {
     // start sandbox
     console.log('starting sandbox for "'+target+'"...')
     IframeSandbox(frameConfig, function(err, sandbox) {
-      console.log('loading "'+target+'"...')
+      if (err) return console.error(err)
 
-      // write to DOM
+      // load dapp into sandbox DOM
+      console.log('loading "'+target+'"...')
       requestDappByUrl( target )
         .pipe( sandbox.createWriteStream() )
 
@@ -69,7 +88,26 @@ function didInsertElement(state, container) {
 }
 
 function willRemoveElement(state, container) {
-  container.removeChild(container.childNodes[0])
+  var target = state.dappUrl
+  var iframe = container.childNodes[0]
+
+  // iframe may be recreated immediately
+  // due to an aggressive virtual-dom
+  // so we keep these references around
+  currentSandboxIframe = iframe
+  currentSandboxIframeInTransit = true
+
+  // hide iframe so it doesnt cause a rendering blip
+  // in the case where we dont reuse it 
+  iframe.style.display = 'none'
+
+  // check if we did not reuse the iframe
+  process.nextTick(function(){
+    if (!currentSandboxIframeInTransit) return
+    // iframe is still in transit, was not reinserted, need to cleanup
+    currentSandboxIframeInTransit = false
+    container.removeChild(iframe)
+  })
 }
 
 //
@@ -100,29 +138,8 @@ function requestDappByUrl(url) {
 
 // rpc stuff
 
-// var Transaction = require('ethereumjs-tx')
-var Transaction = require('ethereumjs-lib').Transaction
-
-// function handleRpc(message) {
-//   console.log('vapor heard rpc:', message.method, message.params)
-//   // web3.eth.getTransactionCount(walletAddress, _handleRpc.bind(null, message))
-// }
-
-// import ethereumjslib from 'npm:ethereumjs-lib'
-// import web3 from 'npm:web3'
-// import BufferModule from 'npm:buffer'
-// var Buffer = BufferModule.Buffer
-// var vaporRpcUrl = (location.hostname === 'localhost') ? 'http://localhost:4000/' : 'https://rpc.vapor.to/'
-
-// web3.setProvider(new web3.providers.HttpProvider(vaporRpcUrl))
-
-var walletAddress = Buffer('a06ef3ed1ce41ade87f764de6ce8095c569d6d57', 'hex')
-var walletKey = Buffer('8234b7fb702abf568633b91b22c03bf9344a6b5371651623d6c412c5f8d9ba73', 'hex')
-
 function handleRpc(message){
   console.log('vapor heard rpc:', message.method, message.params)
-
-  getNonce(walletAddress, function(err, txCount){
 
     switch(message.method) {
       
@@ -131,66 +148,21 @@ function handleRpc(message){
         txParams.to = txParams.to ? normalizeHexString(txParams.to) : null
         txParams.value = txParams.value ? normalizeHexString(txParams.value) : null
         txParams.data = txParams.data ? normalizeHexString(txParams.data) : null
-        txParams.nonce = txCount
         txParams.gasLimit = txParams.gas ? normalizeHexString(txParams.gas) : '2fefd8'
         txParams.gasPrice = 1
 
-        console.log('sending signed tx:', txParams)
-        var tx = new Transaction(txParams)
-        tx.sign(walletKey)
-        sendSignedTransaction(tx)
+        addPendingTx(txParams)
         return
 
       default:
         return
 
       }
-
-    })
-
 }
 
-
-// ==========================
-
-function sendSignedTransaction(signedTx) {
-  var data = signedTx.serialize().toString('hex')
-  var includeTrace = window.DEBUG_RPC || false
-  sendRpc('eth_signedTransact', [data, includeTrace])
+function addPendingTx(txParams) {
+  currentFlatSandbox.actions.newPendingTx(txParams)
 }
-
-function getNonce(address, cb) {
-
-  var data = [address.toString('hex')]
-  sendRpc('eth_getTransactionCount', data, function(err, res, body){
-    if (err) throw err
-    if (body.error) throw body.error
-    nonce = body.result
-    if (nonce === '0x') {
-      nonce = '0x00'
-    }
-    console.log('nonce:', nonce)
-    cb(null, nonce)
-  })
-
-}
-
-function sendRpc(method, data, cb) {
-  cb = cb || noop
-
-  var rpcPayload = {
-    id: getRandomId(),
-    jsonrpc: '2.0',
-    method: method,
-    params: data,
-  }
-
-  request.post(rpcUrl, { withCredentials: false, json: rpcPayload }, cb)
-}
-
-// ==========================
-
-var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1
 
 function normalizeHexString(hex) {
   if (!hex) {
@@ -207,9 +179,3 @@ function normalizeHexString(hex) {
 
   return hex
 }
-
-function getRandomId(){
-  return Math.floor(Math.random() * MAX_SAFE_INTEGER)
-}
-
-function noop(){}

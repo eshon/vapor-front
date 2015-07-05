@@ -1,7 +1,8 @@
-const anchor = require('../router/index.js').anchor
+const anchor = require('../router/').anchor
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
-const UrlBarComponent = require('../url-bar/index.js')
+const UrlBarComponent = require('../url-bar/')
+const NotificationTxComponent = require('../notification-tx/')
 const mustOverride = require('../../util/mustOverride.js')
 const stateExtend = require('../../util/stateExtend.js')
 
@@ -12,12 +13,17 @@ function Component() {
   return hg.state({
     // state
     dappUrl: hg.value(''),
+    showNotification: hg.value(false),
     // components
     urlBar: UrlBarComponent(),
     // channels
     channels: {
       navigateToDapp: mustOverride,
       hamburgerHelper: mustOverride,
+    },
+    // actions
+    actions: {
+
     },
   })
 }
@@ -37,13 +43,24 @@ Component.render = function render(state) {
       UrlBarComponent.render(urlBarState),
       h('button.btn-hamburger.btn-empty.flex-fixed.z-bump', { 'ev-click': hg.sendClick(state.channels.hamburgerHelper) }),
     ]),
-    notification(),
+    state.pendingTxs.map(function(txParams){
+      return NotificationTxComponent.render(txParams, state.actions.submitTx, state.actions.removeTx)
+    }),
   ])
 }
 
-function notification(){
-  return h('.notification.flex-row.flex-space-between', [
-    '3 pending transactions...',
-    h('button', 'confirm'),
-  ])  
+function pluralize(count, singular, plural) {
+  // accepts array or int
+  if (Array.isArray(count)) {
+    count = count.length
+  }
+  // guesses plural form
+  if (!plural) {
+    plural = singular + 's'
+  }
+  if (count === 1) {
+    return singular
+  } else {
+    return plural
+  }
 }

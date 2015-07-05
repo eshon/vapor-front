@@ -7,6 +7,7 @@ module.exports = stateExtend
 
 function stateExtend(stateA, stateB) {
   return extend(stateA, stateB, {
-    channels: extend(stateA.channels, stateB.channels)
+    channels: extend(stateA.channels, stateB.channels),
+    actions: extend(stateA.actions, stateB.actions),
   })
 }

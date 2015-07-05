@@ -47,7 +47,10 @@ var mercury = module.exports = {
     // remove from core: require computed directly instead.
     computed: require('observ/computed'),
     // remove from core: require watch directly instead.
-    watch: require('observ/watch')
+    watch: require('observ/watch'),
+
+    // kumavis - new
+    actions: actions,
 };
 
 function input(names) {
@@ -56,26 +59,6 @@ function input(names) {
     }
 
     return MultipleEvent(names);
-}
-
-function state(obj) {
-    var copy = extend(obj);
-    var $channels = copy.channels;
-    var $handles = copy.handles;
-
-    if ($channels) {
-        copy.channels = mercury.value(null);
-    } else if ($handles) {
-        copy.handles = mercury.value(null);
-    }
-
-    var observ = mercury.struct(copy);
-    if ($channels) {
-        observ.channels.set(mercury.channels($channels, observ));
-    } else if ($handles) {
-        observ.handles.set(mercury.channels($handles, observ));
-    }
-    return observ;
 }
 
 function channels(funcs, context) {
@@ -107,4 +90,44 @@ function app(elem, observ, render, opts) {
     elem.appendChild(loop.target);
 
     return observ(loop.update);
+}
+
+// kumavis - new + modified
+
+// modified - added 'actions', removed deprecated 'handles'
+function state(obj) {
+    var copy = extend(obj);
+    var $channels = copy.channels;
+    var $actions = copy.actions;
+
+    if ($channels) {
+        copy.channels = mercury.value(null);
+    }
+
+    if ($actions) {
+        copy.actions = mercury.value(null);
+    }
+
+    var observ = mercury.struct(copy);
+
+    if ($channels) {
+        observ.channels.set(mercury.channels($channels, observ));
+    }
+
+    if ($actions) {
+        observ.actions.set(mercury.actions($actions, observ));
+    }
+
+    return observ;
+}
+
+function actions(funcs, context) {
+    return Object.keys(funcs).reduce(createEvent, {});
+
+    function createEvent(acc, name) {
+        var handle = funcs[name].bind(null, context);
+
+        acc[name] = handle;
+        return acc;
+    }
 }

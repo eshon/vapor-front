@@ -9,6 +9,7 @@ const AppBarComponent = require('../app-bar/')
 const DappSandboxComponent = require('../dapp-sandbox/')
 const IdMgmtComponent = require('../id-mgmt/')
 const stateExtend = require('../../util/stateExtend.js')
+const signAndSendTx = require('../../util/signTx.js')
 
 const dappRoutePrefix = '/dapp/'
 
@@ -19,6 +20,7 @@ function Component() {
   var state = hg.state({
     // state
     dappUrl: hg.value(getDappUrl()),
+    pendingTxs: hg.array([]),
     // components
     route: RouterComponent(),
     appBar: AppBarComponent(),
@@ -32,6 +34,20 @@ function Component() {
       },
       navigateToRoot: function(state){
         routeAtom.set('/')
+      },
+    },
+    // actions
+    actions: {
+      newPendingTx: function(state, txParams){
+        state.pendingTxs.push(txParams)
+      },
+      submitTx: function(state, txParams){
+        state.actions().removeTx(txParams)
+        signAndSendTx(txParams)
+      },
+      removeTx: function(state, txParams){
+        // remove tx from pendingTxs
+        state.pendingTxs.splice(state.pendingTxs.indexOf(txParams), 1)
       },
     },
   })
@@ -52,9 +68,14 @@ Component.render = function render(state) {
   // setup state
   var appBarState = stateExtend(state.appBar, {
     dappUrl: state.dappUrl,
+    pendingTxs: state.pendingTxs,
     channels: {
       navigateToDapp: state.channels.navigateToDapp,
       hamburgerHelper: state.channels.navigateToRoot,
+    },
+    actions: {
+      submitTx: state.actions.submitTx,
+      removeTx: state.actions.removeTx,
     },
   })
 
@@ -74,6 +95,9 @@ function dappSandbox(state, params) {
     dappUrl: target,
     channels: {
       dappUrlRedirect: state.channels.navigateToDapp,
+    },
+    actions: {
+      newPendingTx: state.actions.newPendingTx,
     },
   })
 
