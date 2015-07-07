@@ -6,17 +6,23 @@ module.exports = Component
 
 
 function Component() {
-  return hg.state({})
+  return hg.state({
+    channels: {
+      unlockLocal: function(state, data){
+        console.log('unlocking with:', data.password)
+      },
+    },
+  })
 }
 
 Component.render = function render(state) {
   return [
     appNav.render(state),
-    aboutSection(),
+    idMgmt(state),
   ]
 }
 
-function aboutSection(){
+function idMgmt(state){
   return h('.app-section-identity.flex-row.flex-center', [
     h('.flex-column', [
       h('header', [
@@ -24,17 +30,7 @@ function aboutSection(){
         h('h3', 'Ethereum identities are accounts for interacting with smart contracts and storing ether.'),
         summary(),
       ]),
-      h('section', [
-        h('h2', 'Local Identities'),
-        h('button', 'new'),
-        h('button', 'import'),
-        h('h3', 'These are stored in the browser and not backed up on our server.'),
-        h('h3', 'Please be sure you have backups of these wallets.'),
-        // h('span', 'no wallets yet...'),
-        identity(),
-        identity(),
-        identity(),
-      ]),
+      localIds(state),
       h('section', [
         h('h2', 'Hosted Identities'),
         h('button', 'new'),
@@ -45,6 +41,32 @@ function aboutSection(){
       ]),
     ]),
   ])
+}
+
+function localIds(state) {
+  var d = HyperDrive('section.local-identities')
+  d('h2', 'Local Identities')
+  d('button', 'new')
+  d('button', 'import')
+  d('h3', 'These are stored in the browser and not backed up on our server.')
+  d('h3', 'Please be sure you have backups of these identities.')
+  if (state.localUnlocked){
+    d('span', 'no wallets yet...')    
+  } else {
+    d('img.lock-icon', { src: '/assets/lock.svg' })
+    d('input', {
+      type: 'password',
+      name: 'password',
+      placeholder: 'password',
+      'ev-change': hg.sendValue(state.channels.unlockLocal)
+    })
+  }
+  return d.render()
+}
+
+function hostedWallets() {
+  var d = HyperDrive('section')
+  return d.render()
 }
 
 function identity(state) {
@@ -78,4 +100,61 @@ function summary(state) {
       ]),
     ]),
   ])
+}
+
+function HyperDrive(tag, config){
+  var content = []
+  append.render = render
+  return append
+  
+  function append(first){
+    // hyperscript obj
+    if (typeof first === 'object') {
+      content.push(first)
+    // hyperscript params
+    } else {
+      content.push(h.apply(null, arguments))
+    }
+  }
+  function render(){
+    return h(tag, config, content)
+  }
+}
+
+// ======================================
+
+function renderLogin(login) {
+  return h('div', {
+    'ev-event': hg.sendSubmit(login)
+  }, [
+    h('fieldset', [
+      h('legend', 'Login Form'),
+      labeledInput('Email: ', {
+        name: 'email',
+      }),
+      labeledInput('Password: ', {
+        name: 'password',
+        type: 'password'
+      }),
+    ])
+  ]);
+}
+
+function labeledInput(label, opts) {
+    opts.className = opts.error ?
+        styles.inputError.className : '';
+
+    return h('div', [
+        h('label', {
+            className: ''
+        }, [
+            label,
+            h('input', opts)
+        ]),
+        h('div', {
+            className: ''
+        }, [
+            opts.error
+        ])
+    ]);
 }

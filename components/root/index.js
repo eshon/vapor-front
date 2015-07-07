@@ -25,6 +25,7 @@ function Component() {
     route: RouterComponent(),
     appBar: AppBarComponent(),
     dappSandbox: DappSandboxComponent(),
+    idMgmt: IdMgmtComponent(),
     // channels
     channels: {
       navigateToDapp: function(state, data){
@@ -63,7 +64,7 @@ Component.render = function render(state) {
   routes['/'] = LandingComponent.render.bind(null, state)
   routes[dappRoutePrefix] = dappSandbox.bind(null, state)
   routes[dappRoutePrefix+':target*'] = dappSandbox.bind(null, state)
-  routes['/identities'] = IdMgmtComponent.render.bind(null, state)
+  routes['/identities'] = idMgmt.bind(null, state)
 
   // setup state
   var appBarState = stateExtend(state.appBar, {
@@ -102,6 +103,11 @@ function dappSandbox(state, params) {
   })
 
   return DappSandboxComponent.render(dappSandboxState)
+}
+
+function idMgmt(state) {
+  var idMgmtState = stateExtend(state.idMgmt, {})
+  return IdMgmtComponent.render(idMgmtState)
 }
 
 function getDappUrl() {
