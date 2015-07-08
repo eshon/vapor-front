@@ -37,7 +37,7 @@ Component.render = function render(state) {
     },
   })
   
-  return h('.app-header', [
+  return h('.app-header.flex-fixed', [
     h('.app-bar.flex-row', [
       h('span.app-bar-logo.flex-fixed.select-none.cursor-pointer.z-bump', 'Vapor'),
       UrlBarComponent.render(urlBarState),

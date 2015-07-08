@@ -1,15 +1,43 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 const appNav = require('../app-nav')
+const keyManager = require('../../util/keyManager')
 
 module.exports = Component
 
 
+var AncientLocal = require('ancient-tome/local')
+
+
 function Component() {
   return hg.state({
+    localIds: hg.array([]),
+    localIdsUnlocked: hg.value(keyManager.isOpen),
+    localIdsUnlocking: hg.value(false),
     channels: {
       unlockLocal: function(state, data){
-        console.log('unlocking with:', data.password)
+        if (keyManager.isOpen) return
+        var secret = data.password
+        state.localIdsUnlocking.set(true)
+        keyManager.open(secret, function(err){
+          if (err) throw err
+          state.localIdsUnlocking.set(false)
+          state.localIdsUnlocked.set(keyManager.isOpen)
+          keyManager.keyList(function(err, keys){
+            if (err) throw err
+            state.localIds.set(keys)
+          })
+        })
+      },
+      createLocalId: function(state){
+        if (!keyManager.isOpen) return
+        keyManager.generateIdentity('new_id', function(err){
+          if (err) throw err
+          keyManager.keyList(function(err, keys){
+            if (err) throw err
+            state.localIds.set(keys)
+          })
+        })
       },
     },
   })
@@ -31,14 +59,14 @@ function idMgmt(state){
         summary(),
       ]),
       localIds(state),
-      h('section', [
-        h('h2', 'Hosted Identities'),
-        h('button', 'new'),
-        h('button', 'upload'),
-        h('h3', 'These are securely backed up on our server.'),
-        identity(),
-        identity(),
-      ]),
+      // h('section', [
+      //   h('h2', 'Hosted Identities'),
+      //   h('button', 'new'),
+      //   h('button', 'upload'),
+      //   h('h3', 'These are securely backed up on our server.'),
+      //   identity(),
+      //   identity(),
+      // ]),
     ]),
   ])
 }
@@ -46,21 +74,32 @@ function idMgmt(state){
 function localIds(state) {
   var d = HyperDrive('section.local-identities')
   d('h2', 'Local Identities')
-  d('button', 'new')
-  d('button', 'import')
   d('h3', 'These are stored in the browser and not backed up on our server.')
   d('h3', 'Please be sure you have backups of these identities.')
-  if (state.localUnlocked){
-    d('span', 'no wallets yet...')    
+  d('h3', 'If this is your first time here, use a memorable password to start creating identities.')
+
+  if (state.localIdsUnlocked){
+    d('button', { 'ev-click': hg.sendClick(state.channels.createLocalId) }, 'new')
+    d('button', 'import')
+    d('br')
+    d('br')
+    state.localIds.forEach(function(id){
+      d(identity(id))
+    })
   } else {
     d('img.lock-icon', { src: '/assets/lock.svg' })
-    d('input', {
-      type: 'password',
-      name: 'password',
-      placeholder: 'password',
-      'ev-change': hg.sendValue(state.channels.unlockLocal)
-    })
+    if (state.localIdsUnlocking) {
+      d('span', 'unlocking...')
+    } else {
+      d('input', {
+        type: 'password',
+        name: 'password',
+        placeholder: 'password',
+        'ev-change': hg.sendValue(state.channels.unlockLocal)
+      })
+    }
   }
+
   return d.render()
 }
 
@@ -73,6 +112,14 @@ function identity(state) {
   return h('.identity-container.flex-row.flex-space-between', [
     h('h4', 'primary'),
     h('table', [
+      h('tr', [
+        h('td', 'name'),
+        h('td', state.name),
+      ]),
+      h('tr', [
+        h('td', 'address'),
+        h('td', state.address.slice(0, 6)),
+      ]),
       h('tr', [
         h('td', 'balance'),
         h('td', '400 Ether'),
