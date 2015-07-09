@@ -6,6 +6,7 @@ var document = require('global/document')
 var atom = Router.atom = value(String(document.location.pathname))
 
 module.exports = Router
+module.exports.navigateTo = navigateTo
 
 function Router() {
   var inPopState = false
@@ -43,4 +44,10 @@ function popstate() {
       broadcast(String(document.location.pathname))
     }
   })
+}
+
+function navigateTo(href){
+  return function navigating(){
+    atom.set(href)
+  }
 }
