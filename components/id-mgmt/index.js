@@ -39,6 +39,9 @@ function Component() {
           })
         })
       },
+      importLocalId: function(state){
+        debugger
+      }
     },
   })
 }
@@ -56,36 +59,23 @@ function idMgmt(state){
       h('header', [
         h('h1', 'Identity Management'),
         h('h3', 'Ethereum identities are accounts for interacting with smart contracts and storing ether.'),
-        summary(),
+        h('h3', 'These are stored in the browser and not backed up on our server.'),
+        h('h3', 'Please be sure you have backups of these identities.'),
+        h('h3', 'If this is your first time here, use a memorable password to start creating identities.'),
       ]),
       localIds(state),
-      // h('section', [
-      //   h('h2', 'Hosted Identities'),
-      //   h('button', 'new'),
-      //   h('button', 'upload'),
-      //   h('h3', 'These are securely backed up on our server.'),
-      //   identity(),
-      //   identity(),
-      // ]),
     ]),
   ])
 }
 
 function localIds(state) {
   var d = HyperDrive('section.local-identities')
-  d('h2', 'Local Identities')
-  d('h3', 'These are stored in the browser and not backed up on our server.')
-  d('h3', 'Please be sure you have backups of these identities.')
-  d('h3', 'If this is your first time here, use a memorable password to start creating identities.')
 
   if (state.localIdsUnlocked){
-    d('button', { 'ev-click': hg.sendClick(state.channels.createLocalId) }, 'new')
-    d('button', 'import')
+    d(summary())
     d('br')
-    d('br')
-    state.localIds.forEach(function(id){
-      d(identity(id))
-    })
+    state.localIds.forEach(function(id){ d(identity(id)) })
+    d(newIdentity(state))
   } else {
     d('img.lock-icon', { src: '/assets/lock.svg' })
     if (state.localIdsUnlocking) {
@@ -110,12 +100,8 @@ function hostedWallets() {
 
 function identity(state) {
   return h('.identity-container.flex-row.flex-space-between', [
-    h('h4', 'primary'),
+    h('h4', state.name),
     h('table', [
-      h('tr', [
-        h('td', 'name'),
-        h('td', state.name),
-      ]),
       h('tr', [
         h('td', 'address'),
         h('td', state.address.slice(0, 6)),
@@ -130,6 +116,11 @@ function identity(state) {
       ]),
     ]),
   ])
+}
+
+function newIdentity(state) {
+  return h('.new-identity-container.identity-container.flex-center.select-none.cursor-pointer', 
+    { 'ev-click': hg.sendClick(state.channels.createLocalId) }, '[ + ]')
 }
 
 function summary(state) {

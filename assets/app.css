@@ -64,6 +64,7 @@ a {
 }
 
 .flex-center {
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -198,7 +199,7 @@ section.local-identities input {
 }
 
 .identity-container {
-  border-radius: 0 8px 8px 8px;
+  border-radius: 8px;
   background: rgb(88, 72, 138);
   color: white;
   padding: 16px;
@@ -214,6 +215,11 @@ section.local-identities input {
 .identity-container table {
   min-width: 300px;
   margin-left: 14px;
+}
+
+.new-identity-container {
+  font-size: 18px;
+  padding: 8px;
 }
 
 .notification {
