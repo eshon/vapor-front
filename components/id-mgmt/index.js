@@ -1,6 +1,5 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
-const appNav = require('../app-nav')
 const keyManager = require('../../util/keyManager')
 
 module.exports = Component
@@ -47,10 +46,7 @@ function Component() {
 }
 
 Component.render = function render(state) {
-  return [
-    appNav.render(state),
-    idMgmt(state),
-  ]
+  return idMgmt(state)
 }
 
 function idMgmt(state){

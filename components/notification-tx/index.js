@@ -1,6 +1,5 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
-const appNav = require('../app-nav')
 const mustOverride = require('../../util/mustOverride.js')
 
 module.exports = Component

@@ -16,6 +16,7 @@ Component.render = function render(state) {
     subnavs.push(subnav(dappUrl, 'back to dapp'))
   }
   subnavs.push(subnav('/', 'about'))
+  subnavs.push(subnav('/trending', 'trending'))
   subnavs.push(subnav('/identities', 'identities'))
   
   return h('.flex-row-right', subnavs)

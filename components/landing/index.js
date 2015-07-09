@@ -1,6 +1,5 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
-const appNav = require('../app-nav')
 
 module.exports = Component
 
@@ -10,10 +9,7 @@ function Component() {
 }
 
 Component.render = function render(state) {
-  return [
-    appNav.render(state),
-    aboutSection(),
-  ]
+  return aboutSection(state)
 }
 
 function aboutSection(){

@@ -63,6 +63,10 @@ a {
   flex: 1 1 auto;
 }
 
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -220,6 +224,24 @@ section.local-identities input {
 .new-identity-container {
   font-size: 18px;
   padding: 8px;
+}
+
+.trending-container {
+  height: 240px;
+  width: 220px;
+  padding: 16px;
+  padding-top: 22px;
+  margin: 20px;
+  border-radius: 8px 0;
+  background: #58488a;
+  color: white;
+}
+
+.trending-container h3 {
+  text-align: center;
+  font-size: 22px;
+  padding-top: 31px;
+  padding-bottom: 14px;
 }
 
 .notification {

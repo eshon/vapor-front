@@ -4,12 +4,14 @@ const RouterComponent = require('../router/')
 const routeAtom = RouterComponent.atom
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
+const stateExtend = require('../../util/stateExtend.js')
+const signAndSendTx = require('../../util/signTx.js')
 const LandingComponent = require('../landing/')
 const AppBarComponent = require('../app-bar/')
 const DappSandboxComponent = require('../dapp-sandbox/')
 const IdMgmtComponent = require('../id-mgmt/')
-const stateExtend = require('../../util/stateExtend.js')
-const signAndSendTx = require('../../util/signTx.js')
+const TrendingComponent = require('../trending/')
+const AppNavComponenent = require('../app-nav')
 
 const dappRoutePrefix = '/dapp/'
 
@@ -26,6 +28,7 @@ function Component() {
     appBar: AppBarComponent(),
     dappSandbox: DappSandboxComponent(),
     idMgmt: IdMgmtComponent(),
+    trending: TrendingComponent(),
     // channels
     channels: {
       navigateToDapp: function(state, data){
@@ -61,10 +64,11 @@ Component.render = function render(state) {
   // define routes
   var routes = {}
   routes['__default__'] = redirectTo.bind(null, '/')
-  routes['/'] = LandingComponent.render.bind(null, state)
+  routes['/'] = landingPage.bind(null, state)
   routes[dappRoutePrefix] = dappSandbox.bind(null, state)
   routes[dappRoutePrefix+':target*'] = dappSandbox.bind(null, state)
   routes['/identities'] = idMgmt.bind(null, state)
+  routes['/trending'] = trendingDapps.bind(null, state)
 
   // setup state
   var appBarState = stateExtend(state.appBar, {
@@ -88,6 +92,17 @@ Component.render = function render(state) {
   ])
 }
 
+function appNav(state) {
+  return AppNavComponenent.render(state)
+}
+
+function landingPage(state) {
+  return [
+    appNav(state),
+    LandingComponent.render(),
+  ]
+}
+
 function dappSandbox(state, params) {
 
   var target = getDappUrl()
@@ -107,8 +122,25 @@ function dappSandbox(state, params) {
 
 function idMgmt(state) {
   var idMgmtState = stateExtend(state.idMgmt, {})
-  return IdMgmtComponent.render(idMgmtState)
+  return [
+    appNav(state),
+    IdMgmtComponent.render(idMgmtState),
+  ]
 }
+
+function trendingDapps(state) {
+  var trendingState = stateExtend(state.trending, {
+    channels: {
+      navigateToDapp: state.channels.navigateToDapp
+    }
+  })
+  return [
+    appNav(state),
+    TrendingComponent.render(trendingState),
+  ]
+}
+
+// util
 
 function getDappUrl() {
   var stem = location.origin + dappRoutePrefix
