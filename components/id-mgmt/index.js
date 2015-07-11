@@ -1,30 +1,31 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 const keyManager = require('../../util/keyManager')
+const networkedIdentity = require('../networked-identity/')
 
 module.exports = Component
 
 
-var AncientLocal = require('ancient-tome/local')
-
-
 function Component() {
   return hg.state({
+    // state
     localIds: hg.array([]),
     localIdsUnlocked: hg.value(keyManager.isOpen),
     localIdsUnlocking: hg.value(false),
+    // channels
     channels: {
       unlockLocal: function(state, data){
         if (keyManager.isOpen) return
         var secret = data.password
         state.localIdsUnlocking.set(true)
         keyManager.open(secret, function(err){
-          if (err) throw err
           state.localIdsUnlocking.set(false)
+          if (err) throw err
           state.localIdsUnlocked.set(keyManager.isOpen)
           keyManager.keyList(function(err, keys){
             if (err) throw err
-            state.localIds.set(keys)
+            var localIds = keys.map(networkedIdentity)
+            state.localIds.set(localIds)
           })
         })
       },
@@ -96,7 +97,7 @@ function hostedWallets() {
 
 function identity(state) {
   return h('.identity-container.flex-row.flex-space-between', [
-    h('h4', state.name),
+    h('h4', state.label),
     h('table', [
       h('tr', [
         h('td', 'address'),
@@ -104,11 +105,11 @@ function identity(state) {
       ]),
       h('tr', [
         h('td', 'balance'),
-        h('td', '400 Ether'),
+        h('td', ''+state.balance),
       ]),
       h('tr', [
         h('td', 'transactions'),
-        h('td', '16'),
+        h('td', ''+state.txCount),
       ]),
     ]),
   ])
@@ -153,42 +154,4 @@ function HyperDrive(tag, config){
   function render(){
     return h(tag, config, content)
   }
-}
-
-// ======================================
-
-function renderLogin(login) {
-  return h('div', {
-    'ev-event': hg.sendSubmit(login)
-  }, [
-    h('fieldset', [
-      h('legend', 'Login Form'),
-      labeledInput('Email: ', {
-        name: 'email',
-      }),
-      labeledInput('Password: ', {
-        name: 'password',
-        type: 'password'
-      }),
-    ])
-  ]);
-}
-
-function labeledInput(label, opts) {
-    opts.className = opts.error ?
-        styles.inputError.className : '';
-
-    return h('div', [
-        h('label', {
-            className: ''
-        }, [
-            label,
-            h('input', opts)
-        ]),
-        h('div', {
-            className: ''
-        }, [
-            opts.error
-        ])
-    ]);
 }
