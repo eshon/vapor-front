@@ -8,7 +8,7 @@ module.exports = networkedIdentity
 function networkedIdentity(data){
   var state = hg.state({
     // local data
-    label: hg.value(data.name),
+    label: hg.value(data.label),
     address: hg.value(data.address),
     // networked data
     balance: hg.value(null),

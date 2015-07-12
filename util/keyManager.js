@@ -27,9 +27,5 @@ KeyManager.prototype._setupEthTeller = function(){
   self.lookup = manager.lookup.bind(manager)
   self.sign = manager.sign.bind(manager)
   self.generateIdentity = manager.generateIdentity.bind(manager)
-}
-
-KeyManager.prototype.keyList = function(cb){
-  var self = this
-  async.map(self.manager.keyList(), self.lookup, cb)
+  self.lookupAll = manager.lookupAll.bind(manager)
 }

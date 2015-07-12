@@ -22,27 +22,30 @@ function Component() {
           state.localIdsUnlocking.set(false)
           if (err) throw err
           state.localIdsUnlocked.set(keyManager.isOpen)
-          keyManager.keyList(function(err, keys){
-            if (err) throw err
-            var localIds = keys.map(networkedIdentity)
-            state.localIds.set(localIds)
-          })
+          state.actions().loadLocalIds()
         })
       },
       createLocalId: function(state){
         if (!keyManager.isOpen) return
         keyManager.generateIdentity('new_id', function(err){
           if (err) throw err
-          keyManager.keyList(function(err, keys){
-            if (err) throw err
-            state.localIds.set(keys)
-          })
+          state.actions().loadLocalIds()
         })
       },
       importLocalId: function(state){
         debugger
       }
     },
+    // actions
+    actions : {
+      loadLocalIds: function(state){
+        keyManager.lookupAll(function(err, keys){
+          if (err) throw err
+          var localIds = keys.map(networkedIdentity)
+          state.localIds.set(localIds)
+        })
+      },
+    }
   })
 }
 
@@ -69,7 +72,7 @@ function localIds(state) {
   var d = HyperDrive('section.local-identities')
 
   if (state.localIdsUnlocked){
-    d(summary())
+    d(summary(state))
     d('br')
     state.localIds.forEach(function(id){ d(identity(id)) })
     d(newIdentity(state))
@@ -105,11 +108,11 @@ function identity(state) {
       ]),
       h('tr', [
         h('td', 'balance'),
-        h('td', ''+state.balance),
+        h('td', String(state.balance)),
       ]),
       h('tr', [
         h('td', 'transactions'),
-        h('td', ''+state.txCount),
+        h('td', String(state.txCount)),
       ]),
     ]),
   ])
@@ -121,17 +124,19 @@ function newIdentity(state) {
 }
 
 function summary(state) {
+  var totalBalance = state.localIds.reduce(function(acc, id){ return acc + id.balance }, 0)
+
   return h('.identities-summary.flex-row.flex-space-between', [
     h('table', [
       h('tr', [
         h('td', 'Number of Identities:'),
-        h('td', '6'),
+        h('td', String(state.localIds.length)),
       ]),
     ]),
     h('table', [
       h('tr', [
         h('td', 'Total Balance:'),
-        h('td', '2402 Ether'),
+        h('td', totalBalance+' Ether'),
       ]),
     ]),
   ])
