@@ -22,9 +22,7 @@ function Component() {
         var secret = data.password
         state.localIdsUnlocking.set(true)
         keyManager.open(secret, function(err){
-          state.localIdsUnlocking.set(false)
           if (err) throw err
-          state.localIdsUnlocked.set(keyManager.isOpen)
           state.actions().loadLocalIds()
         })
       },
@@ -35,15 +33,14 @@ function Component() {
           state.actions().loadLocalIds()
         })
       },
-      importLocalId: function(state){
-        debugger
-      }
     },
     // actions
     actions: {
       loadLocalIds: function(state){
         keyManager.lookupAll(function(err, keys){
           if (err) throw err
+          state.localIdsUnlocked.set(keyManager.isOpen)
+          state.localIdsUnlocking.set(false)
           var localIds = keys.map(networkedIdentity)
           state.localIds.set(localIds)
         })
@@ -60,12 +57,11 @@ function Component() {
     async.each(keysToImport, function(data, next){
       if (!data.bkp) return
       var privateKey = new Buffer(data.bkp, 'hex')
-      keyManager.importIdentity({
+      var keyObj = keyManager.importIdentity({
         label: 'Imported Identity',
         privateKey: privateKey,
       }, next)
-    }, function onDone(){
-      state.actions().loadLocalIds()
+      state.localIds.push(networkedIdentity(keyObj))
     })
   })
 
