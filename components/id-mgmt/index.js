@@ -1,5 +1,8 @@
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
+const async = require('async')
+const dragDrop = require('drag-drop/buffer')
+const ethUtil = require('ethereumjs-util')
 const keyManager = require('../../util/keyManager')
 const networkedIdentity = require('../networked-identity/')
 
@@ -7,7 +10,7 @@ module.exports = Component
 
 
 function Component() {
-  return hg.state({
+  var state = hg.state({
     // state
     localIds: hg.array([]),
     localIdsUnlocked: hg.value(keyManager.isOpen),
@@ -37,7 +40,7 @@ function Component() {
       }
     },
     // actions
-    actions : {
+    actions: {
       loadLocalIds: function(state){
         keyManager.lookupAll(function(err, keys){
           if (err) throw err
@@ -47,6 +50,26 @@ function Component() {
       },
     }
   })
+
+  dragDrop(document.documentElement, function(files){
+    if (!keyManager.isOpen) return
+    var keysToImport = files
+    .map(function(file){
+      return JSON.parse(file.toString())
+    })
+    async.each(keysToImport, function(data, next){
+      if (!data.bkp) return
+      var privateKey = new Buffer(data.bkp, 'hex')
+      keyManager.importIdentity({
+        label: 'Imported Identity',
+        privateKey: privateKey,
+      }, next)
+    }, function onDone(){
+      state.actions().loadLocalIds()
+    })
+  })
+
+  return state
 }
 
 Component.render = function render(state) {
@@ -142,6 +165,8 @@ function summary(state) {
   ])
 }
 
+// util
+
 function HyperDrive(tag, config){
   var content = []
   append.render = render
@@ -160,3 +185,5 @@ function HyperDrive(tag, config){
     return h(tag, config, content)
   }
 }
+
+function noop(){}

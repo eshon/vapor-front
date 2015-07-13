@@ -24,8 +24,7 @@ KeyManager.prototype.open = function(secret, cb){
 KeyManager.prototype._setupEthTeller = function(){
   var self = this
   var manager = self.manager = EthTeller(this.store)
-  self.lookup = manager.lookup.bind(manager)
-  self.sign = manager.sign.bind(manager)
-  self.generateIdentity = manager.generateIdentity.bind(manager)
   self.lookupAll = manager.lookupAll.bind(manager)
+  self.generateIdentity = manager.generateIdentity.bind(manager)
+  self.importIdentity = manager.importIdentity.bind(manager)
 }
