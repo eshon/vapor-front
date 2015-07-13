@@ -13,45 +13,26 @@ function Component() {
   var state = hg.state({
     // state
     localIds: hg.array([]),
-    localIdsUnlocked: hg.value(keyManager.isOpen),
+    localIdsOpen: hg.value(false),
     localIdsUnlocking: hg.value(false),
     // channels
     channels: {
       unlockLocal: function(state, data){
-        if (keyManager.isOpen) return
         var secret = data.password
-        state.localIdsUnlocking.set(true)
         keyManager.open(secret, function(err){
           if (err) throw err
-          state.actions().loadLocalIds()
         })
       },
       createLocalId: function(state){
-        if (!keyManager.isOpen) return
         keyManager.generateIdentity({ label: 'new_id' }, function(err){
           if (err) throw err
-          state.actions().loadLocalIds()
         })
       },
     },
-    // actions
-    actions: {
-      loadLocalIds: function(state){
-        keyManager.lookupAll(function(err, keys){
-          if (err) throw err
-          state.localIdsUnlocked.set(keyManager.isOpen)
-          state.localIdsUnlocking.set(false)
-          var localIds = keys.map(networkedIdentity)
-          state.localIds.set(localIds)
-        })
-      },
-    }
   })
 
   dragDrop(document.documentElement, function(files){
-    if (!keyManager.isOpen) return
-    var keysToImport = files
-    .map(function(file){
+    var keysToImport = files.map(function(file){
       return JSON.parse(file.toString())
     })
     async.each(keysToImport, function(data, next){
@@ -61,7 +42,6 @@ function Component() {
         label: 'Imported Identity',
         privateKey: privateKey,
       }, next)
-      state.localIds.push(networkedIdentity(keyObj))
     })
   })
 
@@ -90,7 +70,7 @@ function idMgmt(state){
 function localIds(state) {
   var d = HyperDrive('section.local-identities')
 
-  if (state.localIdsUnlocked){
+  if (state.localIdsOpen){
     d(summary(state))
     d('br')
     state.localIds.forEach(function(id){ d(identity(id)) })

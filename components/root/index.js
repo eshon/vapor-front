@@ -6,12 +6,14 @@ const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 const stateExtend = require('../../util/stateExtend.js')
 const signAndSendTx = require('../../util/signTx.js')
+const keyManager = require('../../util/keyManager')
 const LandingComponent = require('../landing/')
 const AppBarComponent = require('../app-bar/')
 const DappSandboxComponent = require('../dapp-sandbox/')
 const IdMgmtComponent = require('../id-mgmt/')
 const TrendingComponent = require('../trending/')
 const AppNavComponenent = require('../app-nav')
+
 
 const dappRoutePrefix = '/dapp/'
 
@@ -29,6 +31,7 @@ function Component() {
     dappSandbox: DappSandboxComponent(),
     idMgmt: IdMgmtComponent(),
     trending: TrendingComponent(),
+    keyManager: keyManager.observ,
     // channels
     channels: {
       navigateToDapp: function(state, data){
@@ -121,7 +124,11 @@ function dappSandbox(state, params) {
 }
 
 function idMgmt(state) {
-  var idMgmtState = stateExtend(state.idMgmt, {})
+  var idMgmtState = stateExtend(state.idMgmt, {
+    localIds: keyManager.observ.identities(),
+    localIdsOpen: keyManager.observ.isOpen(),
+    localIdsUnlocking: keyManager.observ.isUnlocking(),
+  })
   return [
     appNav(state),
     IdMgmtComponent.render(idMgmtState),
