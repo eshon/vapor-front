@@ -8,7 +8,7 @@ module.exports = signAndSendTx
 
 function signAndSendTx(txParams) {
   console.log('sending signed tx:', txParams)
-  network.getNonce(walletAddress, function(err, txCount){
+  network.getTransactionCount(walletAddress, function(err, txCount){
     txParams.nonce = txCount
     var tx = new Transaction(txParams)
     tx.sign(walletKey)

@@ -28,7 +28,7 @@ function Component() {
       },
       createLocalId: function(state){
         if (!keyManager.isOpen) return
-        keyManager.generateIdentity('new_id', function(err){
+        keyManager.generateIdentity({ label: 'new_id' }, function(err){
           if (err) throw err
           state.actions().loadLocalIds()
         })

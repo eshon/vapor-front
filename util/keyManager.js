@@ -13,6 +13,7 @@ function KeyManager() {
 KeyManager.prototype.open = function(secret, cb){
   var self = this
   
+  // encryption added and removed here :)
   // self.store = TriplesecDown({
   //   secret: secret,
   //   db: indexedDbDown,
