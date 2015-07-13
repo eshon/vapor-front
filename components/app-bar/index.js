@@ -44,7 +44,7 @@ Component.render = function render(state) {
       h('button.btn-hamburger.btn-empty.flex-fixed.z-bump', { 'ev-click': hg.sendClick(state.channels.hamburgerHelper) }),
     ]),
     state.pendingTxs.map(function(txParams){
-      return NotificationTxComponent.render(txParams, state.actions.submitTx, state.actions.removeTx)
+      return NotificationTxComponent.render(txParams, state.actions.submitTx, state.actions.removeTx, state.actions.setTxFrom)
     }),
   ])
 }

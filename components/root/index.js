@@ -56,6 +56,10 @@ function Component() {
         // remove tx from pendingTxs
         state.pendingTxs.splice(state.pendingTxs.indexOf(txParams), 1)
       },
+      setTxFrom: function(state, txParams, index){
+        var address = keyManager.observ.identities.get(index).address()
+        txParams.from = address
+      },
     },
   })
 
@@ -84,6 +88,7 @@ Component.render = function render(state) {
     actions: {
       submitTx: state.actions.submitTx,
       removeTx: state.actions.removeTx,
+      setTxFrom: state.actions.setTxFrom,
     },
   })
 
