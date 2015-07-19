@@ -4,6 +4,7 @@ const async = require('async')
 const dragDrop = require('drag-drop/buffer')
 const ethUtil = require('ethereumjs-util')
 const keyManager = require('../../util/keyManager')
+const HyperDrive = require('../../util/hyperDrive')
 const networkedIdentity = require('../networked-identity/')
 
 module.exports = Component
@@ -142,24 +143,5 @@ function summary(state) {
 }
 
 // util
-
-function HyperDrive(tag, config){
-  var content = []
-  append.render = render
-  return append
-  
-  function append(first){
-    // hyperscript obj
-    if (typeof first === 'object') {
-      content.push(first)
-    // hyperscript params
-    } else {
-      content.push(h.apply(null, arguments))
-    }
-  }
-  function render(){
-    return h(tag, config, content)
-  }
-}
 
 function noop(){}
