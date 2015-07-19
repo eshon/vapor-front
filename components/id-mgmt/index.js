@@ -42,7 +42,7 @@ function Component() {
       exportAll: function(){
         keyManager.exportAll(function(err, result){
           var blob = new Blob([result], {type: 'text/plain;charset=utf-8'})
-          saveAs(blob, 'ublocked-vapor-wallets.json')
+          saveAs(blob, 'unlocked-vapor-wallets.json')
         })
       },
     }
