@@ -3,8 +3,10 @@ const h = require('../../mercury.js').h
 const async = require('async')
 const dragDrop = require('drag-drop/buffer')
 const ethUtil = require('ethereumjs-util')
+const saveAs = require('browser-saveas')
 const keyManager = require('../../util/keyManager')
 const HyperDrive = require('../../util/hyperDrive')
+const fileSelectHandler = require('../../util/fileSelect').handler
 const networkedIdentity = require('../networked-identity/')
 
 module.exports = Component
@@ -30,21 +32,24 @@ function Component() {
         })
       },
     },
+    // actions
+    actions: {
+      importIdentitiesFromFile: function(state, files){
+        // import into manager
+        files = [].slice.call(files)
+        async.each(files, keyManager.importFromFile.bind(keyManager))
+      },
+      exportAll: function(){
+        keyManager.exportAll(function(err, result){
+          var blob = new Blob([result], {type: 'text/plain;charset=utf-8'})
+          saveAs(blob, 'ublocked-vapor-wallets.json')
+        })
+      },
+    }
   })
 
-  dragDrop(document.documentElement, function(files){
-    var keysToImport = files.map(function(file){
-      return JSON.parse(file.toString())
-    })
-    async.each(keysToImport, function(data, next){
-      if (!data.bkp) return
-      var privateKey = new Buffer(data.bkp, 'hex')
-      var keyObj = keyManager.importIdentity({
-        label: 'Imported Identity',
-        privateKey: privateKey,
-      }, next)
-    })
-  })
+  var removeEvent = dragDrop(document.documentElement, state.actions().importIdentitiesFromFile)
+  // TODO - removeEvent
 
   return state
 }
@@ -73,7 +78,6 @@ function localIds(state) {
 
   if (state.localIdsOpen){
     d(summary(state))
-    d('br')
     state.localIds.forEach(function(id){ d(identity(id)) })
     d(newIdentity(state))
   } else {
@@ -126,18 +130,24 @@ function newIdentity(state) {
 function summary(state) {
   var totalBalance = state.localIds.reduce(function(acc, id){ return acc + id.balance }, 0)
 
-  return h('.identities-summary.flex-row.flex-space-between', [
-    h('table', [
-      h('tr', [
-        h('td', 'Number of Identities:'),
-        h('td', String(state.localIds.length)),
+  return h('.identities-summary.flex-column', [
+    h('section.flex-row', [
+      h('table', [
+        h('tr', [
+          h('td', 'Number of Identities:'),
+          h('td', String(state.localIds.length)),
+        ]),
+      ]),
+      h('table', [
+        h('tr', [
+          h('td', 'Total Balance:'),
+          h('td', totalBalance+' Ether'),
+        ]),
       ]),
     ]),
-    h('table', [
-      h('tr', [
-        h('td', 'Total Balance:'),
-        h('td', totalBalance+' Ether'),
-      ]),
+    h('section.flex-row.flex-center', [
+      h('button', { 'ev-click': fileSelectHandler(state.actions.importIdentitiesFromFile) }, 'import'),
+      h('button', { 'ev-click': state.actions.exportAll }, 'export all'),
     ]),
   ])
 }

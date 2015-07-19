@@ -53,6 +53,42 @@ KeyManager.prototype.importIdentity = function(opts, cb){
   })
 }
 
+KeyManager.prototype.exportAll = function(cb){
+  var self = this
+
+  self.manager.exportAll(function(err, results){
+    if (err) return cb(err)
+    // jsonify, buffer to strings
+    var output = '['+results.map(function(id){
+      return id.toString()
+    }).join(',')+']'
+    cb(null, output)
+  })
+}
+
+KeyManager.prototype.importFromFile = function(data, cb){
+  var self = this
+  // deserialize and normalize data as array
+  data = JSON.parse(data.toString())
+  if (!Array.isArray(data)) data = [data]
+
+  // extract and import each identity in data
+  async.each(data, function(idParams, next){
+    var privateKey
+    // ethereum crowd sale format
+    if (idParams.bkp) privateKey = new Buffer(idParams.bkp, 'hex')
+    // ether-teller format
+    if (idParams.privateKey) privateKey = new Buffer(idParams.privateKey, 'base64')
+    // abort if privateKey not found
+    if (!privateKey) return next()
+    // continue: import key
+    var keyObj = self.importIdentity({
+      label: idParams.label || 'Imported Identity',
+      privateKey: privateKey,
+    }, next)
+  }, cb)
+}
+
 KeyManager.prototype._setupStore = function(cb){
   var self = this
 
@@ -94,6 +130,14 @@ KeyManager.prototype._addIdentity = function(keyObject){
   var networked = networkedIdentity(keyObject)
   self.observ.identities.push(networked)
 }
+
+KeyManager.prototype._serializeForExport = function(keyObject, cb) {
+  var self = this
+
+
+}
+
+// util
 
 function NotOpenError(){
   return new Error('KeyManager Error - Storage has not been unlocked yet.')

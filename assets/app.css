@@ -165,19 +165,25 @@ a {
 }
 
 .app-section-identity header {
-  padding-bottom: 42px
-}
-
-.app-section-identity section {
-  padding-bottom: 62px
+  padding-bottom: 6px
 }
 
 .identities-summary {
+  margin: 10px;
+  margin-bottom: 36px;
+  padding: 16px;
   border-radius: 0 0 8px 8px;
   background: rgb(88, 72, 138);
   color: white;
-  padding: 16px;
-  margin: 10px;
+}
+
+.identities-summary button {
+  margin: 8px;
+  margin-bottom: 0;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: rgb(240, 240, 240);
 }
 
 .identities-summary h4 {
