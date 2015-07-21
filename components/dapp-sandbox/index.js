@@ -7,11 +7,10 @@ const UrlBarComponent = require('../url-bar/index.js')
 const mustOverride = require('../../util/mustOverride.js')
 const stateExtend = require('../../util/stateExtend.js')
 const LifecycleHook = require('../../util/lifecycleHook.js')
-// TODO: should be an env var
-// const dappTransformUrl = '//transform.'+location.host+'/'
-const dappTransformUrl = 'https://transform.vapor.to/'
+const dappTransformUrl = process.env.TRANSFORM_URL
 
 module.exports = Component
+
 
 // BAD: this is antipattern, but not sure how else to do this
 // this is used to connect messages from the iframe sandbox to the component instance
@@ -131,7 +130,7 @@ function handleSandboxMessage(message) {
 
 function requestDappByUrl(url) {
   var xhr = new XMLHttpRequest()
-  url = dappTransformUrl + encodeURIComponent(url)
+  url = dappTransformUrl + '/' + encodeURIComponent(url)
   xhr.open('GET', url, true)
   return new XhrStream( xhr )
 }

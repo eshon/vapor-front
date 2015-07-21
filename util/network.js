@@ -1,8 +1,6 @@
 const request = require('request')
 const MAX_SAFE_INTEGER = Math.pow(2, 53) - 1
-// const rpcUrl = '//rpc.'+location.host+'/'
-const rpcUrl = 'https://rpc.vapor.to/'
-// const rpcUrl = 'http://localhost:8000/'
+const rpcUrl = process.env.RPC_URL
 
 module.exports = {
   sendSignedTransaction: sendSignedTransaction,
