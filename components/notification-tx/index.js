@@ -33,8 +33,8 @@ Component.render = function render(state, submitTx, removeTx, setTxFrom) {
   d('span', 'to: '+state.to.slice(0,8))
   d('span', 'ether: '+parseInt(state.value, 16))
   d('.flex-row-right', [
-    h('button', { disabled: !isValid, 'ev-click': hg.sendClick(submitTx, state) }, 'confirm'),
-    h('button', { disabled: !isValid, 'ev-click': hg.sendClick(removeTx, state) }, 'cancel'),
+    h('button', { 'ev-click': hg.sendClick(submitTx, state), disabled: !isValid }, 'confirm'),
+    h('button', { 'ev-click': hg.sendClick(removeTx, state) }, 'cancel'),
   ])
 
   return d.render()
