@@ -65,7 +65,7 @@ function Component() {
   })
 
   // listen to Metamask plugin for unsignedTxs
-  metamaskPlugin(state())
+  metamaskPlugin(state)
 
   return state
 }
