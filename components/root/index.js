@@ -7,6 +7,7 @@ const h = require('../../mercury.js').h
 const stateExtend = require('../../util/stateExtend.js')
 const signAndSendTx = require('../../util/signTx.js')
 const keyManager = require('../../util/keyManager')
+const metamaskPlugin = require('../../util/metamaskPlugin')
 const LandingComponent = require('../landing/')
 const AppBarComponent = require('../app-bar/')
 const DappSandboxComponent = require('../dapp-sandbox/')
@@ -62,6 +63,9 @@ function Component() {
       },
     },
   })
+
+  // listen to Metamask plugin for unsignedTxs
+  metamaskPlugin(state())
 
   return state
 }
