@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "echo 'No tests yet...' && exit 0",
-    "dev": "watchify index.js -t [ envify --TRANSFORM_URL 'https://transform.metamask.io' --RPC_URL 'https://rpc.metamask.io' --PROXY_URL 'https://proxy.metamask.io' ] -o bundle.js -v & node server.js & wait",
+    "dev": "watchify index.js -t [ envify --TRANSFORM_URL 'https://transform-beta.metamask.io' --RPC_URL 'https://rpc-beta.metamask.io' --PROXY_URL 'https://proxy-beta.metamask.io' ] -o bundle.js -v & node server.js & wait",
     "start": "browserify index.js -t [ envify --TRANSFORM_URL $TRANSFORM_URL --RPC_URL $RPC_URL --PROXY_URL $PROXY_URL ] -o bundle.js && node server.js"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "geval": "^2.1.1",
     "global": "^4.3.0",
     "http-hash-router": "~1.1.0",
+    "iframe": "^0.3.1",
     "iframe-sandbox": "^4.0.1",
     "level-js": "^2.2.1",
     "main-loop": "^3.1.0",
