@@ -22,7 +22,10 @@ function setupPluginSupport(state){
   var metamaskPlugin = chrome.runtime.connect('pfejnnoghgohcpmiahgplcflfpbfeokf', {name: 'metamask'})
   metamaskPlugin.onMessage.addListener(handleMessage)
 
-  window.handleMessage = handleMessage
+  // exportUnsignedTxs
+  state.pendingTxs(function(){
+    // export signedTxs
+  })
 
   function handleMessage(message){
     switch (message.type){
