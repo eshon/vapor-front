@@ -71,10 +71,11 @@ function didInsertElement(state, container) {
 
     // start sandbox
     console.log('starting sandbox for "'+target+'"...')
-    iframe({
+    currentSandboxIframe = iframe({
       container: container,
       src: urlForHtmlTransform( target ),
     })
+    
     // IframeSandbox(frameConfig, function(err, sandbox) {
     //   if (err) return console.error(err)
 
@@ -96,6 +97,11 @@ function urlForHtmlTransform(url) {
 }
 
 function willRemoveElement(state, container) {
+  
+  if (currentSandboxIframe) {
+    currentSandboxIframe.remove()
+  }
+  
 //   var target = state.dappUrl
 //   var iframe = container.childNodes[0]
 
@@ -116,6 +122,7 @@ function willRemoveElement(state, container) {
 //     currentSandboxIframeInTransit = false
 //     container.removeChild(iframe)
 //   })
+
 }
 
 // //
