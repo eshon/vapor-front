@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "test": "echo 'No tests yet...' && exit 0",
-    "dev": "watchify index.js -t [ envify --TRANSFORM_URL 'https://transform-beta.metamask.io' --RPC_URL 'https://rpc-beta.metamask.io' --PROXY_URL 'https://proxy-beta.metamask.io' ] -o bundle.js -v & node server.js & wait",
-    "start": "browserify index.js -t [ envify --TRANSFORM_URL $TRANSFORM_URL --RPC_URL $RPC_URL --PROXY_URL $PROXY_URL ] -o bundle.js && node server.js"
+    "dev": "watchify index.js -t [ envify --TRANSFORM_URL 'https://transform-beta.metamask.io' --PROXY_URL 'https://proxy.metamask.io' ] -o bundle.js -v & node server.js & wait",
+    "start": "browserify index.js -t [ envify --TRANSFORM_URL $TRANSFORM_URL --PROXY_URL 'https://proxy.metamask.io' ] -o bundle.js && node server.js"
   },
   "dependencies": {
     "async": "^1.3.0",
