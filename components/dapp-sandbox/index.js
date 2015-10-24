@@ -73,6 +73,7 @@ function didInsertElement(state, container) {
     console.log('starting sandbox for "'+target+'"...')
     currentSandboxIframe = iframe({
       container: container,
+      sandboxAttributes: ['allow-scripts', 'allow-forms', 'allow-popups', 'allow-same-origin'],
       src: urlForHtmlTransform( target ),
     })
     
