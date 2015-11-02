@@ -39,7 +39,7 @@ Component.render = function render(state) {
   
   return h('.app-header.flex-fixed', [
     h('.app-bar.flex-row', [
-      h('span.app-bar-logo.flex-fixed.select-none.cursor-pointer.z-bump', 'MetaMask'),
+      h('span.app-bar-logo.logo.flex-fixed.select-none.cursor-pointer.z-bump', 'MetaMask'),
       UrlBarComponent.render(urlBarState),
       h('button.btn-hamburger.btn-empty.flex-fixed.z-bump', { 'ev-click': hg.sendClick(state.channels.hamburgerHelper) }),
     ]),

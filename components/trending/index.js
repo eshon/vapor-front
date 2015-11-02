@@ -47,7 +47,10 @@ function trendingDapps(state){
 function trendingThumbnail(state, navigateToDapp){
   return h('.trending-container.flex-column.cursor-pointer',
     { 'ev-click': hg.sendClick(navigateToDapp, state) }, [
-    h('h3', state.title),
-    h('span', state.description),
+    h('h3.title', state.title),
+    h('span.date', 'November 9, 2015'),
+    h('span.desc', state.description),
+    h('span.author', 'Created by Snoopy'),
+    h('span.rating','')
   ])
 }
