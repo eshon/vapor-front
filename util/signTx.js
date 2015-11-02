@@ -12,6 +12,9 @@ function signAndSendTx(txParams) {
     txParams.nonce = txCount
     var tx = new Transaction(txParams)
     tx.sign(walletKey)
-    network.sendSignedTransaction(tx)
+    network.sendSignedTransaction(tx, function(){
+      txParams
+      debugger
+    })
   })
 }
