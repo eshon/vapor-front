@@ -103,20 +103,25 @@ function hostedWallets() {
   return d.render()
 }
 
+css_count = 0;
+
 function identity(state) {
-  return h('.identity-container.flex-row.flex-space-between', [
+  css_count++;
+  var css_color = css_count % 5;
+  return h('.identity-container.flex-row.flex-space-between.color' + css_color, [
+    h('div.icon'),
     h('h4', state.label),
     h('table', [
       h('tr', [
-        h('td', 'address'),
+        h('td.label', 'address'),
         h('td', state.address.slice(0, 6)),
       ]),
       h('tr', [
-        h('td', 'balance'),
+        h('td.label', 'balance'),
         h('td', String(state.balance)),
       ]),
       h('tr', [
-        h('td', 'transactions'),
+        h('td.label', 'transactions'),
         h('td', String(state.txCount)),
       ]),
     ]),
