@@ -354,6 +354,17 @@ section.local-identities input {
   border: 2px solid #ececec;
 }
 
+/* retina */
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+  only screen and (-moz-min-device-pixel-ratio: 1.5),
+  only screen and (-o-min-device-pixel-ratio: 3/2),
+  only screen and (min-device-pixel-ratio: 1.5) {
+    .identity-container div.icon {
+      background: transparent url(../assets/user.png) no-repeat center center;
+      background-size: 50px 45px;
+    }
+}
+
 .identity-container h4 {
   text-transform: uppercase;
   font-size: 20px;
