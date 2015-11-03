@@ -320,6 +320,40 @@ section.local-identities input {
   margin: 10px;
 }
 
+.identity-container.color0 {
+  background: #5B8289;
+}
+
+.identity-container.color1 {
+  background: #3D3E5C;
+}
+
+.identity-container.color2 {
+  background: #506F8B;
+}
+
+.identity-container.color3 {
+  background: #C63963;
+}
+
+.identity-container.color4 {
+  background: #903D57;
+}
+
+.identity-container div.icon {
+  margin-left: 20px;
+  font-size: 30px;
+  background: transparent url(../assets/user.png) no-repeat center center;
+  width: 50px;
+  height: 45px;
+  font-family: FontAwesome;
+  padding: 33px;
+  border-radius: 50%;
+  line-height: 38px;
+  text-shadow: none;
+  border: 2px solid #ececec;
+}
+
 .identity-container h4 {
   text-transform: uppercase;
   font-size: 20px;
@@ -329,6 +363,20 @@ section.local-identities input {
 .identity-container table {
   min-width: 300px;
   margin-left: 14px;
+}
+
+.identity-container table tr {
+  margin-bottom: 2px;
+}
+
+.identity-container table td {
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.identity-container table td.label {
+  font-weight: 400;
+  text-transform: none;
 }
 
 .new-identity-container {
