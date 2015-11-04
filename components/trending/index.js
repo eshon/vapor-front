@@ -8,7 +8,7 @@ module.exports = Component
 function Component() {
   return hg.state({
     //channels
-    channels: {
+    actions: {
       navigateToDapp: mustOverride,
     }
   })
@@ -19,7 +19,7 @@ Component.render = function render(state) {
 }
 
 function trendingDapps(state){
-  var navigateToDapp = state.channels.navigateToDapp
+  var navigateToDapp = state.actions.navigateToDapp
   var dappState = {
     title: 'DaoFund',
     description: 'True decentralized crowd funding. Bring your project to life!',

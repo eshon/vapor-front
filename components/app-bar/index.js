@@ -33,7 +33,7 @@ Component.render = function render(state) {
   var urlBarState = stateExtend(state.urlBar, {
     value: state.dappUrl,
     channels: {
-      submit: state.channels.navigateToDapp,
+      submit: state.actions.navigateToDapp,
     },
   })
   

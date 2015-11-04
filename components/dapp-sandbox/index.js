@@ -1,7 +1,8 @@
-const iframe = require('iframe')
-const IframeSandbox = require('iframe-sandbox')
-const XhrStream = require('xhr-stream')
-const anchor = require('../router/index.js').anchor
+// const iframe = require('iframe')
+// const IframeSandbox = require('iframe-sandbox')
+const DappSandbox = require('dapp-sandbox')
+// const XhrStream = require('xhr-stream')
+// const anchor = require('../router/index.js').anchor
 const hg = require('../../mercury.js')
 const h = require('../../mercury.js').h
 const UrlBarComponent = require('../url-bar/index.js')
@@ -27,8 +28,8 @@ function Component() {
     dappUrl: hg.value(''),
     // actions
     actions: {
-      dappUrlRedirect: mustOverride,
       newPendingTx: mustOverride,
+      dappUrlRedirect: mustOverride,
     },
   })
   currentSandbox = state
@@ -37,6 +38,8 @@ function Component() {
 
 Component.render = function render(state) {
   currentFlatSandbox = state
+  var target = state.dappUrl
+  if (!target) return
   return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) })
 }
 
@@ -71,11 +74,30 @@ function didInsertElement(state, container) {
 
     // start sandbox
     console.log('starting sandbox for "'+target+'"...')
-    currentSandboxIframe = iframe({
+
+    currentSandboxIframe = new DappSandbox({
       container: container,
-      sandboxAttributes: ['allow-scripts', 'allow-forms', 'allow-popups', 'allow-same-origin'],
-      src: urlForHtmlTransform( target ),
+      config: {
+        PROXY_URL: 'https://proxy-beta.metamask.io/',
+        TRANSFORM_URL: 'https://transform-beta.metamask.io/',
+      },
+      addresses: ['0x985095ef977ba75fb2bb79cd5c4b84c81392dff6'],
     })
+
+    currentSandboxIframe.on('tx', function(txParams, cb){
+      currentFlatSandbox.actions.newPendingTx(txParams, cb)
+    })
+    currentSandboxIframe.on('url', function(url){
+      currentFlatSandbox.actions.dappUrlRedirect({url: url})
+    })
+
+    currentSandboxIframe.navigateTo(target)
+
+    // currentSandboxIframe = iframe({
+    //   container: container,
+    //   sandboxAttributes: ['allow-scripts', 'allow-forms', 'allow-popups', 'allow-same-origin'],
+    //   src: urlForHtmlTransform( target ),
+    // })
     
     // IframeSandbox(frameConfig, function(err, sandbox) {
     //   if (err) return console.error(err)
@@ -100,7 +122,7 @@ function urlForHtmlTransform(url) {
 function willRemoveElement(state, container) {
   
   if (currentSandboxIframe) {
-    currentSandboxIframe.remove()
+    currentSandboxIframe.iframe.remove()
   }
   
 //   var target = state.dappUrl
@@ -125,6 +147,10 @@ function willRemoveElement(state, container) {
 //   })
 
 }
+
+// function addPendingTx(txParams) {
+//   currentFlatSandbox.actions.newPendingTx(txParams)
+// }
 
 // //
 // // Sandbox methods
@@ -174,10 +200,6 @@ function willRemoveElement(state, container) {
 //         return
 
 //       }
-// }
-
-// function addPendingTx(txParams) {
-//   currentFlatSandbox.actions.newPendingTx(txParams)
 // }
 
 // function normalizeHexString(hex) {

@@ -35,17 +35,19 @@ function Component() {
     keyManager: keyManager.observ,
     // channels
     channels: {
-      navigateToDapp: function(state, data){
-        var target = data.url
-        state.dappUrl.set(target)
-        routeAtom.set(dappRoutePrefix + target)
-      },
       navigateToRoot: function(state){
         routeAtom.set('/')
       },
     },
     // actions
     actions: {
+      navigateToDapp: function(state, data){
+        var target = data.url
+        var current = state.dappUrl()
+        if (target === current) return
+        state.dappUrl.set(target)
+        routeAtom.set(dappRoutePrefix + target)
+      },
       newPendingTx: function(state, txParams){
         state.pendingTxs.push(txParams)
       },
@@ -86,10 +88,10 @@ Component.render = function render(state) {
     dappUrl: state.dappUrl,
     pendingTxs: state.pendingTxs,
     channels: {
-      navigateToDapp: state.channels.navigateToDapp,
       hamburgerHelper: state.channels.navigateToRoot,
     },
     actions: {
+      navigateToDapp: state.actions.navigateToDapp,
       submitTx: state.actions.submitTx,
       removeTx: state.actions.removeTx,
       setTxFrom: state.actions.setTxFrom,
@@ -121,11 +123,9 @@ function dappSandbox(state, params) {
   
   var dappSandboxState = stateExtend(state.dappSandbox, {
     dappUrl: target,
-    channels: {
-      dappUrlRedirect: state.channels.navigateToDapp,
-    },
     actions: {
       newPendingTx: state.actions.newPendingTx,
+      dappUrlRedirect: state.actions.navigateToDapp,
     },
   })
 
@@ -146,8 +146,8 @@ function idMgmt(state) {
 
 function trendingDapps(state) {
   var trendingState = stateExtend(state.trending, {
-    channels: {
-      navigateToDapp: state.channels.navigateToDapp
+    actions: {
+      navigateToDapp: state.actions.navigateToDapp,
     }
   })
   return [
