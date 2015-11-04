@@ -19,7 +19,8 @@ var provider = new BlockAppsProvider({
 });
 
 function sendSignedTransaction(signedTx, cb) {
-  provider.eth_sendRawTransaction(signedTx, cb)
+  var rawTx = signedTx.serialize().toString('hex')
+  provider.eth_sendRawTransaction(rawTx, cb)
 }
 
 function getBalance(address, cb) {

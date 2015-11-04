@@ -59,10 +59,9 @@ function didInsertElement(state, container) {
     currentSandboxIframe.style.display = 'block'
     // skip initialization
     return
-  } else {
-    currentSandboxIframe = null
-    currentSandboxIframeUrl = null
   }
+
+  if (target === currentSandboxIframeUrl) return
 
   // var frameConfig = {
   //   container: container,
@@ -85,11 +84,15 @@ function didInsertElement(state, container) {
     })
 
     currentSandboxIframe.on('tx', function(txParams, cb){
+      if (this !== currentSandboxIframe) return
       currentFlatSandbox.actions.newPendingTx(txParams, cb)
-    })
+    }.bind(currentSandboxIframe))
+    
     currentSandboxIframe.on('url', function(url){
+      if (this !== currentSandboxIframe) return
+      currentSandboxIframeUrl = url
       currentFlatSandbox.actions.dappUrlRedirect({url: url})
-    })
+    }.bind(currentSandboxIframe))
 
     currentSandboxIframe.navigateTo(target)
 
@@ -121,30 +124,30 @@ function urlForHtmlTransform(url) {
 
 function willRemoveElement(state, container) {
   
-  if (currentSandboxIframe) {
-    currentSandboxIframe.iframe.remove()
-  }
+  // if (currentSandboxIframe) {
+  //   currentSandboxIframe.iframe.remove()
+  // }
   
-//   var target = state.dappUrl
-//   var iframe = container.childNodes[0]
+  var target = state.dappUrl
+  var iframe = container.childNodes[0]
 
-//   // iframe may be recreated immediately
-//   // due to an aggressive virtual-dom
-//   // so we keep these references around
-//   currentSandboxIframe = iframe
-//   currentSandboxIframeInTransit = true
+  // iframe may be recreated immediately
+  // due to an aggressive virtual-dom
+  // so we keep these references around
+  currentSandboxIframe = iframe
+  currentSandboxIframeInTransit = true
 
-//   // hide iframe so it doesnt cause a rendering blip
-//   // in the case where we dont reuse it 
-//   iframe.style.display = 'none'
+  // hide iframe so it doesnt cause a rendering blip
+  // in the case where we dont reuse it 
+  iframe.style.display = 'none'
 
-//   // check if we did not reuse the iframe
-//   process.nextTick(function(){
-//     if (!currentSandboxIframeInTransit) return
-//     // iframe is still in transit, was not reinserted, need to cleanup
-//     currentSandboxIframeInTransit = false
-//     container.removeChild(iframe)
-//   })
+  // check if we did not reuse the iframe
+  process.nextTick(function(){
+    if (!currentSandboxIframeInTransit) return
+    // iframe is still in transit, was not reinserted, need to cleanup
+    currentSandboxIframeInTransit = false
+    container.removeChild(iframe)
+  })
 
 }
 

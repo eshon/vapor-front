@@ -30,7 +30,7 @@ Component.render = function render(state, submitTx, removeTx, setTxFrom) {
 
   var isValid = !!fromOptions.length
 
-  d('span', 'to: '+state.to.slice(0,8))
+  d('span', state.to ? 'to: '+state.to.slice(0,8) : 'new contract')
   d('span', 'ether: '+parseInt(state.value, 16))
   d('.flex-row-right', [
     h('button', { 'ev-click': hg.sendClick(submitTx, state), disabled: !isValid }, 'confirm'),

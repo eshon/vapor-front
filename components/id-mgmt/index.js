@@ -79,7 +79,7 @@ function localIds(state) {
 
   if (state.localIdsOpen){
     d(summary(state))
-    state.localIds.forEach(function(id){ d(identity(id)) })
+    state.localIds.forEach(function(id, index){ d(identity(id, index)) })
     d(newIdentity(state))
   } else {
     d('img.lock-icon', { src: '/assets/lock.svg' })
@@ -103,11 +103,8 @@ function hostedWallets() {
   return d.render()
 }
 
-css_count = 0;
-
-function identity(state) {
-  css_count++;
-  var css_color = css_count % 5;
+function identity(state, index) {
+  var css_color = index % 5;
   return h('.identity-container.flex-row.flex-space-between.color' + css_color, [
     h('div.icon'),
     h('h4', state.label),

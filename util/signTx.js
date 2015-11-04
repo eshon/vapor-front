@@ -1,20 +1,40 @@
 const Transaction = require('ethereumjs-lib').Transaction
+const ethUtil = require('ethereumjs-util')
 const network = require('./network')
-const walletAddress = Buffer('a06ef3ed1ce41ade87f764de6ce8095c569d6d57', 'hex')
-const walletKey = Buffer('8234b7fb702abf568633b91b22c03bf9344a6b5371651623d6c412c5f8d9ba73', 'hex')
+const walletAddress = Buffer('985095ef977ba75fb2bb79cd5c4b84c81392dff6', 'hex')
+const walletKey = Buffer('0d0ba14043088cd629a978b49c8691deca5926f0271432bc0064e4745bac0a9f', 'hex')
 
 module.exports = signAndSendTx
 
 
 function signAndSendTx(txParams) {
-  console.log('sending signed tx:', txParams)
   network.getTransactionCount(walletAddress, function(err, txCount){
+    // add nonce
     txParams.nonce = txCount
+    // format values
+    txParams.gasLimit = normalizeHex(txParams.gas)
+    delete txParams.gas
+    txParams.data = normalizeHex(txParams.code)
+    delete txParams.code
+    txParams.nonce = normalizeHex(txParams.nonce)
+    txParams.gasPrice = normalizeHex(txParams.gasPrice)
+
+    // create and sign tx
     var tx = new Transaction(txParams)
     tx.sign(walletKey)
+    console.log('sending signed tx:', txParams)
     network.sendSignedTransaction(tx, function(){
-      txParams
-      debugger
+
     })
   })
+}
+
+function normalizeHex(hex){
+  if (!hex) return
+  var value = ethUtil.stripHexPrefix(hex)
+  if (value.length % 2 !== 0) {
+    value = '0'+value
+  }
+  value = ethUtil.addHexPrefix(value)
+  return value
 }
