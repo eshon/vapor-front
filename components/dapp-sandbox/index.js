@@ -19,7 +19,7 @@ module.exports = Component
 var currentSandbox = null
 var currentFlatSandbox = null
 var currentSandboxIframe = null
-var currentSandboxIframeUrl = null
+var currentSandboxUrl = null
 var currentSandboxIframeInTransit = false
 
 function Component() {
@@ -32,7 +32,6 @@ function Component() {
       dappUrlRedirect: mustOverride,
     },
   })
-  currentSandbox = state
   return state
 }
 
@@ -61,7 +60,7 @@ function didInsertElement(state, container) {
     return
   }
 
-  if (target === currentSandboxIframeUrl) return
+  if (target === currentSandboxUrl) return
 
   // var frameConfig = {
   //   container: container,
@@ -74,7 +73,13 @@ function didInsertElement(state, container) {
     // start sandbox
     console.log('starting sandbox for "'+target+'"...')
 
-    currentSandboxIframe = new DappSandbox({
+    // cleanup previous sandbox
+    if (currentSandbox) {
+      currentSandbox.removeAllListeners('url')
+      currentSandbox.removeAllListeners('tx')
+    }
+
+    currentSandbox = new DappSandbox({
       container: container,
       config: {
         PROXY_URL: 'https://proxy-beta.metamask.io/',
@@ -83,37 +88,16 @@ function didInsertElement(state, container) {
       addresses: ['0x985095ef977ba75fb2bb79cd5c4b84c81392dff6'],
     })
 
-    currentSandboxIframe.on('tx', function(txParams, cb){
-      if (this !== currentSandboxIframe) return
+    currentSandbox.on('tx', function(txParams, cb){
       currentFlatSandbox.actions.newPendingTx(txParams, cb)
-    }.bind(currentSandboxIframe))
+    })
     
-    currentSandboxIframe.on('url', function(url){
-      if (this !== currentSandboxIframe) return
-      currentSandboxIframeUrl = url
+    currentSandbox.on('url', function(url){
+      currentSandboxUrl = url
       currentFlatSandbox.actions.dappUrlRedirect({url: url})
-    }.bind(currentSandboxIframe))
+    })
 
-    currentSandboxIframe.navigateTo(target)
-
-    // currentSandboxIframe = iframe({
-    //   container: container,
-    //   sandboxAttributes: ['allow-scripts', 'allow-forms', 'allow-popups', 'allow-same-origin'],
-    //   src: urlForHtmlTransform( target ),
-    // })
-    
-    // IframeSandbox(frameConfig, function(err, sandbox) {
-    //   if (err) return console.error(err)
-
-    //   // load dapp into sandbox DOM
-    //   console.log('loading "'+target+'"...')
-    //   requestDappByUrl( target )
-    //     .pipe( sandbox.createWriteStream() )
-
-    //   // handle messages
-    //   sandbox.on('message', handleSandboxMessage)
-
-    // })
+    currentSandbox.navigateTo(target)
 
   })
 }
@@ -125,7 +109,7 @@ function urlForHtmlTransform(url) {
 function willRemoveElement(state, container) {
   
   // if (currentSandboxIframe) {
-  //   currentSandboxIframe.iframe.remove()
+  //   currentSandboxIframe.remove()
   // }
   
   var target = state.dappUrl
