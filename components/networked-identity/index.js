@@ -17,14 +17,17 @@ function networkedIdentity(data){
     isLoaded: hg.value(false),
     // actions
     actions: {
+      signTx: function(state, tx, cb){
+        return data.signTx(tx, cb)
+      },
       update: function(state){
         requestIdentity(state.address(), function(err, data){
           if (err) throw err
           state.balance.set(data.balance)
           state.txCount.set(data.txCount)
         })
-      }
-    }
+      },
+    },
   })
 
   state.actions().update()

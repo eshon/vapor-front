@@ -115,6 +115,8 @@ function willRemoveElement(state, container) {
   var target = state.dappUrl
   var iframe = container.childNodes[0]
 
+  if (!iframe) return
+
   // iframe may be recreated immediately
   // due to an aggressive virtual-dom
   // so we keep these references around

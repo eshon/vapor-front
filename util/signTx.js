@@ -1,14 +1,18 @@
 const Transaction = require('ethereumjs-lib').Transaction
 const ethUtil = require('ethereumjs-util')
 const network = require('./network')
-const walletAddress = Buffer('985095ef977ba75fb2bb79cd5c4b84c81392dff6', 'hex')
-const walletKey = Buffer('0d0ba14043088cd629a978b49c8691deca5926f0271432bc0064e4745bac0a9f', 'hex')
+const keyManager = require('./keyManager.js')
 
 module.exports = signAndSendTx
 
 
 function signAndSendTx(txParams) {
-  network.getTransactionCount(walletAddress, function(err, txCount){
+  var fromAddress = ethUtil.stripHexPrefix(txParams.from)
+  var identities = keyManager.observ.identities()
+  var targetId = identities.filter(function(data){ return data.address === fromAddress })[0]
+  if (!targetId) return console.error('Identity not found...', fromAddress)
+
+  network.getTransactionCount(new Buffer(fromAddress, 'hex'), function(err, txCount){
     // add nonce
     txParams.nonce = txCount
     // format values
@@ -21,10 +25,11 @@ function signAndSendTx(txParams) {
 
     // create and sign tx
     var tx = new Transaction(txParams)
-    tx.sign(walletKey)
-    console.log('sending signed tx:', txParams)
-    network.sendSignedTransaction(tx, function(){
-
+    targetId.actions.signTx(tx, function(err, tx){
+      console.log('sending signed tx:', txParams)
+      network.sendSignedTransaction(tx, function(){
+        console.log('tx submitted.', arguments)
+      })
     })
   })
 }
