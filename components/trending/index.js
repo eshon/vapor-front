@@ -21,9 +21,11 @@ Component.render = function render(state) {
 function trendingDapps(state){
   var navigateToDapp = state.actions.navigateToDapp
   var dappState = {
-    title: 'DaoFund',
-    description: 'True decentralized crowd funding. Bring your project to life!',
-    url: 'https://kumavis.github.io/dao-fund/?address=0xbe71e4b943144eac4667af2d0301a842d7b4b5c5',
+    title: 'BoardRoom',
+    description: 'A complete blockchain governance platform.',
+    url: 'http://meteor-dapp-boardroom.meteor.com/',
+    author: 'Nick Dodson',
+    date: 'November 9, 2015',
   }
   return h('.app-section-trending.flex-column.flex-center', [
     h('header', [
@@ -48,9 +50,9 @@ function trendingThumbnail(state, navigateToDapp){
   return h('.trending-container.flex-column.cursor-pointer',
     { 'ev-click': hg.sendClick(navigateToDapp, state) }, [
     h('h3.title', state.title),
-    h('span.date', 'November 9, 2015'),
+    h('span.date', state.date),
     h('span.desc', state.description),
-    h('span.author', 'Created by Snoopy'),
+    h('span.author', 'Created by '+state.author),
     h('span.rating','')
   ])
 }
