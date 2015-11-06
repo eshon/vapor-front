@@ -47,16 +47,7 @@ function normalizeParams(oldParams, defaults){
   newParams.gasLimit = normalizeHex(oldParams.gas || oldParams.gasLimit)
   newParams.gasPrice = normalizeHex(oldParams.gasPrice || defaults.gasPrice)
   newParams.nonce = normalizeHex(oldParams.nonce || defaults.nonce)
-  // extra squeaky clean
-  var tempTx = new Transaction(newParams)
-  return {
-    to: tempTx.to,
-    value: tempTx.value,
-    data: tempTx.data,
-    gasLimit: tempTx.gasLimit,
-    gasPrice: tempTx.gasPrice,
-    nonce: tempTx.nonce,
-  }
+  return newParams
 }
 
 function normalizeHex(hex){
@@ -65,5 +56,5 @@ function normalizeHex(hex){
   if (value.length % 2 !== 0) {
     value = '0'+value
   }
-  return value
+  return ethUtil.addHexPrefix(value)
 }
