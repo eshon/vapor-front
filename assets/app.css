@@ -699,7 +699,6 @@ h1.logo.animated {
   height: 20px;
   border-radius: 50%;
   position: absolute;
-  text-indent: -9999em;
   -webkit-animation: load4 1.3s infinite linear;
   animation: load4 1.3s infinite linear;
 }
