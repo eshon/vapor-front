@@ -40,7 +40,10 @@ Component.render = function render(state) {
   currentFlatSandbox = state
   var target = state.dappUrl
   if (!target) return
-  return h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) })
+  return [
+    h('.loader'),
+    h('.dapp-sandbox', { hook: new LifecycleHook(state, didInsertElement, willRemoveElement) }),
+  ]
 }
 
 //
