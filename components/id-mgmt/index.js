@@ -63,13 +63,15 @@ function idMgmt(state){
     h('.flex-column', [
       h('header', [
         h('h1', 'Identity Management'),
+      ]),
+      localIds(state),
+      h('footer', [
         h('h3.id_heading', 'Your Identity'),
         h('h3.id_desc', 'Ethereum identities are accounts for interacting with smart contracts and storing ether. These are stored in the browser and not backed up on our server. Please be sure you have backups of these identities.'),
         h('br'),
         h('h3.id_heading', 'Create an Identity'),
         h('h3.id_desc', 'If this is your first time here, use a memorable password to start creating identities.'),
       ]),
-      localIds(state),
     ]),
   ])
 }

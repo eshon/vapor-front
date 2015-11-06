@@ -244,6 +244,11 @@ a:hover{
   margin: 0 auto 20px;
 }
 
+.app-section-identity footer {
+  max-width: 500px;
+  margin: 40px auto 20px;
+}
+
 .app-section-identity h3.id_heading {
   font-weight: bold;
   color: #506F8B;
