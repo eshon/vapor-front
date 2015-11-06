@@ -9,6 +9,7 @@ const UrlBarComponent = require('../url-bar/index.js')
 const mustOverride = require('../../util/mustOverride.js')
 const stateExtend = require('../../util/stateExtend.js')
 const LifecycleHook = require('../../util/lifecycleHook.js')
+const network = require('../../util/network.js')
 const dappTransformUrl = process.env.TRANSFORM_URL
 
 module.exports = Component
@@ -76,7 +77,8 @@ function didInsertElement(state, container) {
     // cleanup previous sandbox
     if (currentSandbox) {
       currentSandbox.removeAllListeners('url')
-      currentSandbox.removeAllListeners('tx')
+      // currentSandbox.removeAllListeners('tx')
+      currentSandbox.removeAllListeners('web3Payload')
     }
 
     currentSandbox = new DappSandbox({
@@ -88,8 +90,13 @@ function didInsertElement(state, container) {
       addresses: ['0x985095ef977ba75fb2bb79cd5c4b84c81392dff6'],
     })
 
-    currentSandbox.on('tx', function(txParams, cb){
-      currentFlatSandbox.actions.newPendingTx(txParams, cb)
+    // currentSandbox.on('tx', function(txParams, cb){
+    //   currentFlatSandbox.actions.newPendingTx(txParams, cb)
+    // })
+
+    currentSandbox.on('web3Payload', function(payload, cb){
+      console.log('web3 payload:', payload)
+      network.processWeb3Payload(payload, cb)
     })
     
     currentSandbox.on('url', function(url){

@@ -7,6 +7,7 @@ const h = require('../../mercury.js').h
 const stateExtend = require('../../util/stateExtend.js')
 const signAndSendTx = require('../../util/signTx.js')
 const keyManager = require('../../util/keyManager')
+const network = require('../../util/network')
 const metamaskPlugin = require('../../util/metamaskPlugin')
 const LandingComponent = require('../landing/')
 const AppBarComponent = require('../app-bar/')
@@ -68,6 +69,9 @@ function Component() {
 
   // listen to Metamask plugin for unsignedTxs
   metamaskPlugin(state)
+
+  // listen to Network (web3) for unsignedTxs
+  network.setupWeb3(keyManager.observ.identities, state.actions().newPendingTx)
 
   return state
 }

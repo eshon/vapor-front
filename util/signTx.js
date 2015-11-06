@@ -1,4 +1,4 @@
-const Transaction = require('ethereumjs-lib').Transaction
+const Transaction = require('ethereumjs-tx')
 const ethUtil = require('ethereumjs-util')
 const network = require('./network')
 const keyManager = require('./keyManager.js')
@@ -13,33 +13,57 @@ function signAndSendTx(txParams) {
   if (!targetId) return console.error('Identity not found...', fromAddress)
 
   network.getTransactionCount(new Buffer(fromAddress, 'hex'), function(err, txCount){
+    if (err) throw err
     // add nonce
-    txParams.nonce = txCount
-    // format values
-    txParams.gasLimit = normalizeHex(txParams.gas)
-    delete txParams.gas
-    txParams.data = normalizeHex(txParams.code)
-    delete txParams.code
-    txParams.nonce = normalizeHex(txParams.nonce)
-    txParams.gasPrice = normalizeHex(txParams.gasPrice)
+    var defaults = { nonce: txCount }
 
-    // create and sign tx
-    var tx = new Transaction(txParams)
-    targetId.actions.signTx(tx, function(err, tx){
-      console.log('sending signed tx:', txParams)
-      network.sendSignedTransaction(tx, function(){
-        console.log('tx submitted.', arguments)
+    network.getGasPrice(function(err, gasPrice){
+      if (err) throw err
+      
+      // add gasPrice
+      defaults.gasPrice = gasPrice
+
+      // create and sign tx
+      var cleanParams = normalizeParams(txParams, defaults)
+      var tx = new Transaction(cleanParams)
+
+      targetId.actions.signTx(tx, function(err, tx){
+        console.log('sending signed tx:', cleanParams)
+        network.sendSignedTransaction(tx, function(){
+          console.log('tx submitted.', arguments)
+        })
       })
     })
+
   })
 }
 
+function normalizeParams(oldParams, defaults){
+  var newParams = {}
+  // format values
+  newParams.to = oldParams.to ? normalizeHex(oldParams.to) : null
+  newParams.value = normalizeHex(oldParams.value)
+  newParams.data = normalizeHex(oldParams.code || oldParams.data)
+  newParams.gasLimit = normalizeHex(oldParams.gas || oldParams.gasLimit)
+  newParams.gasPrice = normalizeHex(oldParams.gasPrice || defaults.gasPrice)
+  newParams.nonce = normalizeHex(oldParams.nonce || defaults.nonce)
+  // extra squeaky clean
+  var tempTx = new Transaction(newParams)
+  return {
+    to: tempTx.to,
+    value: tempTx.value,
+    data: tempTx.data,
+    gasLimit: tempTx.gasLimit,
+    gasPrice: tempTx.gasPrice,
+    nonce: tempTx.nonce,
+  }
+}
+
 function normalizeHex(hex){
-  if (!hex) return
+  if (!hex) return null
   var value = ethUtil.stripHexPrefix(hex)
   if (value.length % 2 !== 0) {
     value = '0'+value
   }
-  value = ethUtil.addHexPrefix(value)
   return value
 }
