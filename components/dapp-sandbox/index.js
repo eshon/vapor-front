@@ -61,7 +61,7 @@ function didInsertElement(state, container) {
     return
   }
 
-  if (target === currentSandboxUrl) return
+  if (!currentSandbox && target === currentSandboxUrl) return
 
   // var frameConfig = {
   //   container: container,
@@ -122,21 +122,23 @@ function willRemoveElement(state, container) {
   var target = state.dappUrl
   var iframe = container.childNodes[0]
 
-  if (!iframe) return
+  if (iframe) {
 
-  // iframe may be recreated immediately
-  // due to an aggressive virtual-dom
-  // so we keep these references around
-  currentSandboxIframe = iframe
-  currentSandboxIframeInTransit = true
+    // iframe may be recreated immediately
+    // due to an aggressive virtual-dom
+    // so we keep these references around
+    currentSandboxIframe = iframe
+    currentSandboxIframeInTransit = true
 
-  // hide iframe so it doesnt cause a rendering blip
-  // in the case where we dont reuse it 
-  iframe.style.display = 'none'
+    // hide iframe so it doesnt cause a rendering blip
+    // in the case where we dont reuse it 
+    iframe.style.display = 'none'
+  }
 
   // check if we did not reuse the iframe
   process.nextTick(function(){
     if (!currentSandboxIframeInTransit) return
+    if (!container.childNodes[0]) currentSandbox = null
     // iframe is still in transit, was not reinserted, need to cleanup
     currentSandboxIframeInTransit = false
     container.removeChild(iframe)
