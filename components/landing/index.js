@@ -15,7 +15,7 @@ Component.render = function render(state) {
 function aboutSection(){
   return h('.app-section-about.flex-row.flex-center', [
     h('.flex-column', [
-      h('h1.logo'),
+      h('h1.logo.animated.gentleWave.anim-late'),
       h('h2', 'Your window into the decentralized web.'),
       h('br'),
       h('span.desc', 'A new paradigm is upon us.'),
