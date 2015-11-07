@@ -21,12 +21,12 @@ Component.render = function render(state, submitTx, removeTx, setTxFrom) {
   var d = HyperDrive('.notification.flex-row.flex-space-between')
   var fromOptions = keyManager.observ.identities().map(function(id){ return id.label })
   
-  d('span', 'Unconfirmed Tx:')
+  d('span', 'Confirm Transaction:')
   if (fromOptions.length) {
-    d('from: ')
+    d('label', 'from: ')
     d(selectComponent(fromOptions, setTxFrom.bind(null, state)))
   } else {
-    d(anchor({ href: '/identities/' }, 'from: unlock identities'))
+    d(anchor({ href: '/identities/' }, 'Unlock your identities'))
   }
 
   var isValid = !!fromOptions.length
@@ -35,8 +35,8 @@ Component.render = function render(state, submitTx, removeTx, setTxFrom) {
   d('span', 'value: '+parseInt(state.value || '0', 16))
   d('span', state.data ? 'data size: '+dataSize(state.data) : '')
   d('.flex-row-right', [
-    h('button', { 'ev-click': hg.sendClick(submitTx, state), disabled: !isValid }, 'confirm'),
-    h('button', { 'ev-click': hg.sendClick(removeTx, state) }, 'cancel'),
+    h('button.confirm', { 'ev-click': hg.sendClick(submitTx, state), disabled: !isValid }, 'confirm'),
+    h('button.cancel', { 'ev-click': hg.sendClick(removeTx, state) }, 'cancel'),
   ])
 
   return d.render()

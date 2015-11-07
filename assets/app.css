@@ -454,19 +454,66 @@ section.local-identities input {
 
 .notification {
   width: 100%;
-  padding: 4px;
-  padding-left: 12px;
-  line-height: 18px;
-  height: 26px;
+  line-height: 24px;
   font-size: 14px;
+  background-color: #7795b1;
+  padding: 8px 10px;
+  height: 40px;
+  vertical-align: middle;
+  font-family: 'Arvo', Arial, sans-serif;
+  color: orange;
+  padding-left: 110px;
+  padding-right: 5%;
+}
+
+.notification .from-group {
+
+}
+
+.notification a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.notification select {
+  padding: 10px 8px;
+  min-width: 100px;
+  color: orange;
+  border: 2px solid orange;
+  font-family: 'Arvo', Arial, sans-serif;
+  font-size: 12px;
+  height: 24px;
+  border-radius: 3px;
+  box-shadow: none;
+  background: transparent;
+}
+
+.notification select:focus {
+  outline: none;
 }
 
 .notification:nth-child(even) {
-  background: rgb(218, 218, 218);
+  background-color: #506F8B;
 }
 
 .notification:nth-child(odd) {
-  background: rgb(250, 250, 250);
+  background-color: #849AAD;
+}
+
+.notification button {
+  padding: 4px 10px;
+  text-transform: uppercase;
+  font-weight: 300;
+  background-color: transparent;
+  color: orange;
+  border-radius: 3px;
+  border: 1px solid orange;
+  margin-right: 5px;
+}
+
+.notification button:hover {
+  background-color: orange;
+  color: #506F8B;
 }
 
 /* doodads */
